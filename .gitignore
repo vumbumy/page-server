@@ -1,8 +1,10 @@
 .gradle
-application-local.yml
 .idea
+
 /logs
 /target
 src/generated
 
 *.iml
+application-local.yml
+dependency-reduced-pom.xml
