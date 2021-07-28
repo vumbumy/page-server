@@ -2,7 +2,7 @@ package com.example.server.dto;
 
 import lombok.AllArgsConstructor;
 
-public class Request {
+public class PublicRequest {
     @AllArgsConstructor
     public static class SignIn {
         public String userName;

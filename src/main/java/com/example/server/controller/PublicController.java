@@ -1,7 +1,7 @@
 package com.example.server.controller;
 
 import com.example.server.config.JwtTokenProvider;
-import com.example.server.dto.Request;
+import com.example.server.dto.PublicRequest;
 import com.example.server.entity.User;
 import com.example.server.repository.UserRepository;
 import com.example.server.service.UserSevice;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
@@ -26,7 +25,7 @@ public class PublicController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign/up")
-    public ResponseEntity<User> createUser(@RequestBody Request.SignIn request) {
+    public ResponseEntity<User> createUser(@RequestBody PublicRequest.SignIn request) {
         try {
             return ResponseEntity.ok(
                     userSevice.createUser(request)
@@ -37,9 +36,8 @@ public class PublicController {
     }
 
     @PostMapping("/sign/in")
-    public ResponseEntity<String> getToken(@RequestBody Request.SignIn request) {
-        User member = userRepository.findByUserName(request.userName)
-            .orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+    public ResponseEntity<String> getToken(@RequestBody PublicRequest.SignIn request) {
+        User member = userSevice.getUserByUserName(request.userName);
 
         if (!passwordEncoder.matches(request.password, member.getPassword())) {
             throw new IllegalArgumentException("Wrong Password");
