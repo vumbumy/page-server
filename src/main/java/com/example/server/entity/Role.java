@@ -8,9 +8,9 @@ import javax.persistence.*;
 @Table(name = "_ROLE")
 @NoArgsConstructor
 public class Role {
-    public static String ADMIN = "ADMIN";
-    public static String USER = "USER";
-    public static String PARTNER = "PARTNER";
+    public static final String ADMIN = "ADMIN";
+    public static final String USER = "USER";
+    public static final String PARTNER = "PARTNER";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

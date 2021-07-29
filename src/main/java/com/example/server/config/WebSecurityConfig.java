@@ -40,8 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             .and()
             .requestMatchers().and()
             .authorizeRequests()
-                .antMatchers("/secured/admin/**").hasRole(Role.ADMIN)
-                .antMatchers("/secured/**").authenticated()
+                .antMatchers("/secured/admin/**").hasRole(String.valueOf(Role.ADMIN))
+                .antMatchers("/secured/**").hasRole(String.valueOf(Role.USER))
                 .antMatchers("/**").permitAll()
             .and()
             .addFilterBefore(
