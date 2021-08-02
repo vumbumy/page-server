@@ -17,8 +17,6 @@ import java.util.List;
 public class UserController {
     private final UserSevice userSevice;
 
-    private final UserConvert userConvert;
-
     @GetMapping(value = "/secured/admin/users")
     ResponseEntity<List<User>> getUserList() {
         return ResponseEntity.ok(
@@ -29,7 +27,7 @@ public class UserController {
     @GetMapping(value = "/secured/me")
     ResponseEntity<UserResponse> getMe(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
-                userConvert.to(user)
+                userSevice.convertUser(user)
         );
     }
 }

@@ -1,7 +1,10 @@
 package com.example.server.service;
 
 import com.example.server.dto.PublicRequest;
+import com.example.server.dto.UserResponse;
 import com.example.server.entity.User;
+import com.example.server.entity.UserGroup;
+import com.example.server.repository.UserGroupRepository;
 import com.example.server.repository.UserRepository;
 import com.example.server.support.UserConvert;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserSevice {
     private final UserRepository userRepository;
+    private final UserGroupRepository userGroupRepository;
 
     private final UserConvert userConvert;
 
@@ -38,5 +42,16 @@ public class UserSevice {
 
     public List<User> getAllUserList() {
         return userRepository.findAll();
+    }
+
+    public UserResponse convertUser(User user) {
+        UserResponse userResponse = userConvert.to(user);
+
+        if (user.getGroupNo() != null) {
+            userGroupRepository.findById(user.getGroupNo())
+                    .ifPresent(userGroup -> userResponse.groupName = userGroup.groupName);
+        }
+
+        return userResponse;
     }
 }
