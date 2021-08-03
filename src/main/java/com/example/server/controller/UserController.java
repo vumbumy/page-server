@@ -3,7 +3,6 @@ package com.example.server.controller;
 import com.example.server.dto.UserResponse;
 import com.example.server.entity.User;
 import com.example.server.service.UserSevice;
-import com.example.server.support.UserConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

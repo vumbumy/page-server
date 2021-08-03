@@ -1,11 +1,13 @@
 package com.example.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class User implements UserDetails {
     @Column(length = 15)
     private String phoneNumber; // E.164 Format
 
+    @JsonIgnore
     private String password;
 
     // TODO : ROLE 사용시
@@ -45,6 +48,8 @@ public class User implements UserDetails {
     // return this.roles.stream()
     //  .map(SimpleGrantedAuthority::new)
     //  .collect(Collectors.toList());
+
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (roles == null) {
@@ -77,7 +82,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !ObjectUtils.isEmpty(roles);
     }
 
 }

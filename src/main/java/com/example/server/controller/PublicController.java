@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.config.JwtTokenProvider;
 import com.example.server.dto.PublicRequest;
+import com.example.server.dto.UserResponse;
 import com.example.server.entity.User;
 import com.example.server.repository.UserRepository;
 import com.example.server.service.UserSevice;
@@ -25,10 +26,11 @@ public class PublicController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign/up")
-    public ResponseEntity<User> createUser(@RequestBody PublicRequest.SignIn request) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody PublicRequest.SignIn request) {
         try {
+            User user = userSevice.createUser(request);
             return ResponseEntity.ok(
-                    userSevice.createUser(request)
+                    userSevice.convertUser(user)
             );
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -38,9 +40,12 @@ public class PublicController {
     @PostMapping("/sign/in")
     public ResponseEntity<String> getToken(@RequestBody PublicRequest.SignIn request) {
         User member = userSevice.getUserByUserName(request.userName);
+        if (!member.isEnabled()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         if (!passwordEncoder.matches(request.password, member.getPassword())) {
-            throw new IllegalArgumentException("Wrong Password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         return ResponseEntity.ok(

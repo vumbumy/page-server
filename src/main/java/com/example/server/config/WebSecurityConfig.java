@@ -11,7 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebSecurity
@@ -40,21 +39,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             .and()
             .requestMatchers().and()
             .authorizeRequests()
-                .antMatchers("/secured/admin/**").hasRole(String.valueOf(Role.ADMIN))
-                .antMatchers("/secured/**").hasRole(String.valueOf(Role.USER))
+                .antMatchers("/secured/admin/**").hasRole(Role.ADMIN)
+                .antMatchers("/secured/**").hasAnyRole(Role.USER, Role.ADMIN, Role.PARTNER)
                 .antMatchers("/**").permitAll()
             .and()
             .addFilterBefore(
                 new JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class
             );
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-            .allowedOrigins("*")
-            .allowedHeaders("*")
-            .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }
