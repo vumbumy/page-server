@@ -1,7 +1,7 @@
 package com.example.server.controller;
 
-import com.example.server.dto.UserResponse;
-import com.example.server.entity.User;
+import com.example.server.dto.User;
+import com.example.server.entity.UserEntity;
 import com.example.server.service.UserSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,14 @@ public class UserController {
     private final UserSevice userSevice;
 
     @GetMapping(value = "/secured/admin/users")
-    ResponseEntity<List<User>> getUserList() {
+    ResponseEntity<List<UserEntity>> getUserList() {
         return ResponseEntity.ok(
                 userSevice.getAllUserList()
         );
     }
 
     @GetMapping(value = "/secured/me")
-    ResponseEntity<UserResponse> getMe(@AuthenticationPrincipal User user) {
+    ResponseEntity<User.Info> getMe(@AuthenticationPrincipal UserEntity user) {
         return ResponseEntity.ok(
                 userSevice.convertUser(user)
         );

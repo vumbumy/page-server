@@ -1,6 +1,6 @@
 package com.example.server.config;
 
-import com.example.server.entity.User;
+import com.example.server.entity.UserEntity;
 import com.example.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findByUserName(userName);
+        Optional<UserEntity> optionalUser = userRepository.findByUserName(userName);
         if (!optionalUser.isPresent()) {
             throw new UsernameNotFoundException("USER NOT FOUND :" + userName);
         }

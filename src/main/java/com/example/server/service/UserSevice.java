@@ -1,9 +1,8 @@
 package com.example.server.service;
 
-import com.example.server.dto.PublicRequest;
-import com.example.server.dto.UserResponse;
-import com.example.server.entity.User;
-import com.example.server.entity.UserGroup;
+import com.example.server.dto.Sign;
+import com.example.server.dto.User;
+import com.example.server.entity.UserEntity;
 import com.example.server.repository.UserGroupRepository;
 import com.example.server.repository.UserRepository;
 import com.example.server.support.UserConvert;
@@ -23,29 +22,29 @@ public class UserSevice {
 
     private final PasswordEncoder passwordEncoder;
 
-    public User createUser(PublicRequest.SignIn request) throws IllegalArgumentException{
+    public UserEntity createUser(Sign.InRequest request) throws IllegalArgumentException{
         if(userRepository.findByUserName(request.userName).isPresent()) {
             throw new IllegalArgumentException("ALREADY_EXIST");
         }
 
-        User user = userConvert.from(request);
+        UserEntity user = userConvert.from(request);
 
         user.setPassword(passwordEncoder.encode(request.password));
 
         return userRepository.save(user);
     }
 
-    public User getUserByUserName(String userName) throws IllegalArgumentException {
+    public UserEntity getUserByUserName(String userName) throws IllegalArgumentException {
         return userRepository.findByUserName(userName)
                 .orElseThrow(() -> new IllegalArgumentException("User Not Found"));
     }
 
-    public List<User> getAllUserList() {
+    public List<UserEntity> getAllUserList() {
         return userRepository.findAll();
     }
 
-    public UserResponse convertUser(User user) {
-        UserResponse userResponse = userConvert.to(user);
+    public User.Info convertUser(UserEntity user) {
+        User.Info userResponse = userConvert.to(user);
 
         if (user.getGroupNo() != null) {
             userGroupRepository.findById(user.getGroupNo())

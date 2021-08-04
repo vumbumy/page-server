@@ -1,10 +1,9 @@
 package com.example.server.controller;
 
 import com.example.server.config.JwtTokenProvider;
-import com.example.server.dto.PublicRequest;
-import com.example.server.dto.UserResponse;
-import com.example.server.entity.User;
-import com.example.server.repository.UserRepository;
+import com.example.server.dto.Sign;
+import com.example.server.dto.User;
+import com.example.server.entity.UserEntity;
 import com.example.server.service.UserSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,14 +20,13 @@ import java.util.Collections;
 public class PublicController {
     private final UserSevice userSevice;
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign/up")
-    public ResponseEntity<UserResponse> createUser(@RequestBody PublicRequest.SignIn request) {
+    public ResponseEntity<User.Info> createUser(@RequestBody Sign.InRequest request) {
         try {
-            User user = userSevice.createUser(request);
+            UserEntity user = userSevice.createUser(request);
             return ResponseEntity.ok(
                     userSevice.convertUser(user)
             );
@@ -38,18 +36,21 @@ public class PublicController {
     }
 
     @PostMapping("/sign/in")
-    public ResponseEntity<String> getToken(@RequestBody PublicRequest.SignIn request) {
-        User member = userSevice.getUserByUserName(request.userName);
-        if (!member.isEnabled()) {
+    public ResponseEntity<Sign.InResponse> getToken(@RequestBody Sign.InRequest request) {
+        UserEntity user = userSevice.getUserByUserName(request.userName);
+        if (!user.isEnabled()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        if (!passwordEncoder.matches(request.password, member.getPassword())) {
+        if (!passwordEncoder.matches(request.password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         return ResponseEntity.ok(
-            jwtTokenProvider.createToken(member.getUsername(), Collections.emptyList())
+                Sign.InResponse.builder()
+//                        .user(userSevice.convertUser(user))
+                        .token(jwtTokenProvider.createToken(user.getUsername(), Collections.emptyList()))
+                        .build()
         );
     }
 }
