@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -20,6 +22,13 @@ public class UserController {
     ResponseEntity<List<UserEntity>> getUserList() {
         return ResponseEntity.ok(
                 userSevice.getAllUserList()
+        );
+    }
+
+    @PutMapping(value = "/secured/admin/users")
+    ResponseEntity<User.Info> updateUser(@RequestBody User.UpdateRequest userEntity) {
+        return ResponseEntity.ok(
+                userSevice.updateUser(userEntity)
         );
     }
 

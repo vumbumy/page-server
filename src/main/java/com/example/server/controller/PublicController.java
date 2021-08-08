@@ -68,9 +68,8 @@ public class PublicController {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        UserEntity user = userSevice.createUser(request);
         return ResponseEntity.ok(
-                userSevice.convertUser(user)
+                userSevice.createUser(request)
         );
     }
 
