@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -43,7 +44,7 @@ public class PublicController {
         Matcher matcher = pattern.matcher(request.userName);
 
         if (!matcher.matches()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new IllegalArgumentException("This email is not available.");
         }
 
         Email from = new Email(SENDGRID_FROM);
@@ -67,25 +68,21 @@ public class PublicController {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        try {
-            UserEntity user = userSevice.createUser(request);
-            return ResponseEntity.ok(
-                    userSevice.convertUser(user)
-            );
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        UserEntity user = userSevice.createUser(request);
+        return ResponseEntity.ok(
+                userSevice.convertUser(user)
+        );
     }
 
     @PostMapping("/sign/in")
-    public ResponseEntity<Sign.InResponse> getToken(@RequestBody Sign.InRequest request) {
+    public ResponseEntity<Sign.InResponse> getToken(@RequestBody Sign.InRequest request) throws AuthenticationException {
         UserEntity user = userSevice.getUserByUserName(request.userName);
         if (!user.isEnabled()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new AuthenticationException("No visitors allowed.");
         }
 
         if (!passwordEncoder.matches(request.password, user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new AuthenticationException("Incorrect password.");
         }
 
         return ResponseEntity.ok(

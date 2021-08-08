@@ -24,7 +24,7 @@ public class UserSevice {
 
     public UserEntity createUser(Sign.InRequest request) throws IllegalArgumentException{
         if(userRepository.findByUserName(request.userName).isPresent()) {
-            throw new IllegalArgumentException("ALREADY_EXIST");
+            throw new IllegalArgumentException("You are already registered with this email!");
         }
 
         UserEntity user = userConvert.from(request);
@@ -36,7 +36,7 @@ public class UserSevice {
 
     public UserEntity getUserByUserName(String userName) throws IllegalArgumentException {
         return userRepository.findByUserName(userName)
-                .orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+                .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
     }
 
     public List<UserEntity> getAllUserList() {

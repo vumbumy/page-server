@@ -14,7 +14,6 @@ public class Sign {
 
     @Builder
     public static class InResponse {
-//        public User.Info user;
         public String token;
     }
 }

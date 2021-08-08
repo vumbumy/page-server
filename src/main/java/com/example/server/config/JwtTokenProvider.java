@@ -1,5 +1,6 @@
 package com.example.server.config;
 
+import com.example.server.service.UserSevice;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

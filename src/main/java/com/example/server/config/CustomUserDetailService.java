@@ -1,15 +1,14 @@
 package com.example.server.config;
 
-import com.example.server.entity.UserEntity;
 import com.example.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
@@ -18,11 +17,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        Optional<UserEntity> optionalUser = userRepository.findByUserName(userName);
-        if (!optionalUser.isPresent()) {
-            throw new UsernameNotFoundException("USER NOT FOUND :" + userName);
-        }
-
-        return optionalUser.get();
+        return userRepository.findByUserName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
     };
 }
