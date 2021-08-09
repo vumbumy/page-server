@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.util.List;
 
 @AllArgsConstructor
-public class Sign {
+public class SignDto {
     public static class InRequest {
         public String userName;
         public String password;

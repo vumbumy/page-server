@@ -1,9 +1,9 @@
 package com.example.server.service;
 
-import com.example.server.dto.Sign;
-import com.example.server.dto.User;
+import com.example.server.dto.SignDto;
+import com.example.server.dto.UserDto;
 import com.example.server.entity.Role;
-import com.example.server.entity.UserEntity;
+import com.example.server.entity.User;
 import com.example.server.repository.RoleRepository;
 import com.example.server.repository.UserGroupRepository;
 import com.example.server.repository.UserRepository;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,12 +27,12 @@ public class UserSevice {
 
     private final PasswordEncoder passwordEncoder;
 
-    public User.Info createUser(Sign.InRequest request) throws IllegalArgumentException{
+    public UserDto.Info createUser(SignDto.InRequest request) throws IllegalArgumentException{
         if(userRepository.findByUserName(request.userName).isPresent()) {
             throw new IllegalArgumentException("You are already registered with this email!");
         }
 
-        UserEntity user = userConvert.from(request);
+        User user = userConvert.from(request);
 
         user.setPassword(passwordEncoder.encode(request.password));
 
@@ -42,8 +41,8 @@ public class UserSevice {
         );
     }
 
-    public User.Info updateUser(User.UpdateRequest updated) throws IllegalArgumentException{
-        UserEntity oldUser = userRepository.findById(updated.userNo)
+    public UserDto.Info updateUser(UserDto.UpdateRequest updated) throws IllegalArgumentException{
+        User oldUser = userRepository.findById(updated.userNo)
                 .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
 
         if (updated.userName != null) {
@@ -70,17 +69,17 @@ public class UserSevice {
         );
     }
 
-    public UserEntity getUserByUserName(String userName) throws IllegalArgumentException {
+    public User getUserByUserName(String userName) throws IllegalArgumentException {
         return userRepository.findByUserName(userName)
                 .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
     }
 
-    public List<UserEntity> getAllUserList() {
+    public List<User> getAllUserList() {
         return userRepository.findAll();
     }
 
-    public User.Info convertUser(UserEntity user) {
-        User.Info userResponse = userConvert.to(user);
+    public UserDto.Info convertUser(User user) {
+        UserDto.Info userResponse = userConvert.to(user);
 
         if (user.getGroupNo() != null) {
             userGroupRepository.findById(user.getGroupNo())

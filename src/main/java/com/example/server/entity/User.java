@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserEntity implements UserDetails {
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue
     private Long userNo;
@@ -85,4 +86,11 @@ public class UserEntity implements UserDetails {
         return !ObjectUtils.isEmpty(roles);
     }
 
+    public boolean isAdmin() {
+        return roles.stream().anyMatch(role -> role.value.equals(Role.PREFIX + Role.ADMIN));
+    }
+
+    public boolean isPartnerAdmin() {
+        return roles.stream().anyMatch(role -> role.value.equals(Role.PREFIX + Role.PARTNER));
+    }
 }

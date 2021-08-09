@@ -1,16 +1,18 @@
 package com.example.server.controller;
 
 import com.example.server.config.JwtTokenProvider;
-import com.example.server.dto.Sign;
-import com.example.server.dto.User;
-import com.example.server.entity.UserEntity;
+import com.example.server.dto.SignDto;
+import com.example.server.dto.UserDto;
+import com.example.server.entity.User;
 import com.example.server.service.UserSevice;
 import com.sendgrid.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,7 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequiredArgsConstructor
-public class PublicController {
+public class AuthController {
     private final UserSevice userSevice;
 
     private final PasswordEncoder passwordEncoder;
@@ -36,7 +38,7 @@ public class PublicController {
     private String SENDGRID_FROM;
 
     @PostMapping("/sign/up")
-    public ResponseEntity<User.Info> createUser(@RequestBody Sign.InRequest request) {
+    public ResponseEntity<UserDto.Info> createUser(@RequestBody SignDto.InRequest request) {
 
         String regex = "^(.+)@(.+)$";
 
@@ -74,8 +76,8 @@ public class PublicController {
     }
 
     @PostMapping("/sign/in")
-    public ResponseEntity<Sign.InResponse> getToken(@RequestBody Sign.InRequest request) throws AuthenticationException {
-        UserEntity user = userSevice.getUserByUserName(request.userName);
+    public ResponseEntity<SignDto.InResponse> getToken(@RequestBody SignDto.InRequest request) throws AuthenticationException {
+        User user = userSevice.getUserByUserName(request.userName);
         if (!user.isEnabled()) {
             throw new AuthenticationException("No visitors allowed.");
         }
@@ -85,10 +87,17 @@ public class PublicController {
         }
 
         return ResponseEntity.ok(
-                Sign.InResponse.builder()
+                SignDto.InResponse.builder()
 //                        .user(userSevice.convertUser(user))
                         .token(jwtTokenProvider.createToken(user.getUsername(), Collections.emptyList()))
                         .build()
+        );
+    }
+
+    @GetMapping(value = "/secured/me")
+    ResponseEntity<UserDto.Info> getMe(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(
+                userSevice.convertUser(user)
         );
     }
 }

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-public class User {
+public class UserDto {
 
     @AllArgsConstructor
     public static class Info {

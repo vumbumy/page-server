@@ -1,41 +1,31 @@
 package com.example.server.controller;
 
-import com.example.server.dto.User;
-import com.example.server.entity.UserEntity;
+import com.example.server.dto.UserDto;
+import com.example.server.entity.User;
 import com.example.server.service.UserSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/secured/admin")
 public class UserController {
     private final UserSevice userSevice;
 
-    @GetMapping(value = "/secured/admin/users")
-    ResponseEntity<List<UserEntity>> getUserList() {
+    @GetMapping(value = "/users")
+    ResponseEntity<List<User>> getUserList() {
         return ResponseEntity.ok(
                 userSevice.getAllUserList()
         );
     }
 
-    @PutMapping(value = "/secured/admin/users")
-    ResponseEntity<User.Info> updateUser(@RequestBody User.UpdateRequest userEntity) {
+    @PutMapping(value = "/users")
+    ResponseEntity<UserDto.Info> updateUser(@RequestBody UserDto.UpdateRequest userEntity) {
         return ResponseEntity.ok(
                 userSevice.updateUser(userEntity)
-        );
-    }
-
-    @GetMapping(value = "/secured/me")
-    ResponseEntity<User.Info> getMe(@AuthenticationPrincipal UserEntity user) {
-        return ResponseEntity.ok(
-                userSevice.convertUser(user)
         );
     }
 }
