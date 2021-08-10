@@ -1,13 +1,10 @@
 package com.example.server.service;
 
-import com.example.server.constant.AccessRight;
 import com.example.server.dao.TicketDao;
-import com.example.server.dto.PermissionDto;
 import com.example.server.dto.TicketDto;
 import com.example.server.entity.Permission;
 import com.example.server.entity.Ticket;
 import com.example.server.entity.User;
-import com.example.server.repository.PermissionRepository;
 import com.example.server.repository.TicketRepository;
 import com.example.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -56,33 +51,24 @@ public class TicketService {
         return TicketDto.Response.builder()
                 .content(ticket.content)
                 .status(ticket.status)
-                .permissions(new ArrayList<>(
-                        ticket.permissions.stream()
-                                .map(permission -> PermissionDto.builder()
-                                        .userNo(permission.userNo)
-                                        .groupNo(permission.groupNo)
-                                        .accessRight(permission.accessRight)
-                                        .build()
-                                )
-                                .collect(Collectors.toList())
-                ))
+                .permissions(ticket.getPermissions())
                 .build();
     }
 
     public TicketDto.Response createTicket(TicketDto.Request request) {
 
-//        List<Permission> permissionList = new ArrayList<>();
-//        for(Permission permission : request.permissions) {
-//            permissionList.add(
-//                    permissionService.createIfNotExist(permission)
-//            );
-//        }
+        List<Permission> permissionList = new ArrayList<>();
+        for(Permission permission : request.permissions) {
+            permissionList.add(
+                    permissionService.createIfNotExist(permission)
+            );
+        }
 
         return ticketConvert.to(
                 ticketRepository.save(
                         Ticket.builder()
                                 .content(request.content)
-                                .permissions(request.permissions)
+                                .permissions(permissionList)
                                 .build()
                 )
         );

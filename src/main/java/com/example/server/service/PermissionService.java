@@ -23,6 +23,6 @@ public class PermissionService {
 
     public Permission createIfNotExist(Permission permission) {
         return permissionRepository.findPermissionByUserNoAndAccessRight(permission.userNo, permission.accessRight)
-                .orElse(permissionRepository.save(permission));
+                .orElseGet(() -> permissionRepository.save(permission));
     }
 }

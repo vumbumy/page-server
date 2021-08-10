@@ -18,6 +18,6 @@ public class TicketDto {
         public Long ticketNo;
         public String content;
         public Ticket.Status status;
-        public List<PermissionDto> permissions;
+        public List<Permission> permissions;
     }
 }

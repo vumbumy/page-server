@@ -1,6 +1,7 @@
 package com.example.server.entity;
 
 import com.example.server.constant.AccessRight;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class Permission implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     public Long permissionNo;
 
     @Column
