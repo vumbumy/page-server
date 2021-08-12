@@ -4,7 +4,9 @@ import com.example.server.entity.Permission;
 import com.example.server.repository.PermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,5 +26,18 @@ public class PermissionService {
     public Permission createIfNotExist(Permission permission) {
         return permissionRepository.findPermissionByUserNoAndAccessRight(permission.userNo, permission.accessRight)
                 .orElseGet(() -> permissionRepository.save(permission));
+    }
+
+    public List<Permission> addListIfNotExist(List<Permission> permissions) {
+        if (CollectionUtils.isEmpty(permissions)) return null;
+
+        List<Permission> permissionList = new ArrayList<>();
+        for(Permission permission : permissions) {
+            permissionList.add(
+                    this.createIfNotExist(permission)
+            );
+        }
+
+        return permissionList;
     }
 }

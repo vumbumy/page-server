@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.security.sasl.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class TicketService {
     }
 
 
-    public TicketDto.Response getTicketByUser(User user, Long ticketNo) {
+    public TicketDto getTicketByUser(User user, Long ticketNo) {
         Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
         if (ticket == null) {
             return null;
@@ -48,29 +49,43 @@ public class TicketService {
             return null;
         }
 
-        return TicketDto.Response.builder()
+        return TicketDto.builder()
                 .content(ticket.content)
                 .status(ticket.status)
-                .permissions(ticket.getPermissions())
+                .permissions(ticket.permissions)
                 .build();
     }
 
-    public TicketDto.Response createTicket(TicketDto.Request request) {
-
-        List<Permission> permissionList = new ArrayList<>();
-        for(Permission permission : request.permissions) {
-            permissionList.add(
-                    permissionService.createIfNotExist(permission)
-            );
-        }
+    public TicketDto createTicket(TicketDto request) {
+        Ticket ticket = Ticket.builder()
+                .status(request.status)
+                .content(request.content)
+                .permissions(
+                        permissionService.addListIfNotExist(request.permissions)
+                )
+                .build();
 
         return ticketConvert.to(
-                ticketRepository.save(
-                        Ticket.builder()
-                                .content(request.content)
-                                .permissions(permissionList)
-                                .build()
-                )
+                ticketRepository.save(ticket)
         );
+    };
+
+    public void updateTicket(User user, TicketDto request) {
+        Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
+        if (ticket == null) {
+            throw new IllegalArgumentException("Not found ticket.");
+        }
+
+        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
+            throw new RuntimeException("Not found ticket.");
+        }
+
+        ticket.status = request.status;
+        ticket.content = request.content;
+//        ticket.setPermissions(
+//                permissionService.addListIfNotExist(request.permissions)
+//        );
+
+        ticketRepository.save(ticket);
     };
 }

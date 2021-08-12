@@ -6,18 +6,10 @@ import lombok.Builder;
 
 import java.util.List;
 
+@Builder
 public class TicketDto {
-    public static class Request {
-        public String content;
-        public Ticket.Status status;
-        public List<Permission> permissions;
-    }
-
-    @Builder
-    public static class Response {
-        public Long ticketNo;
-        public String content;
-        public Ticket.Status status;
-        public List<Permission> permissions;
-    }
+    public Long ticketNo;
+    public String content;
+    public Ticket.Status status;
+    public List<Permission> permissions;
 }
