@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.security.sasl.AuthenticationException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -24,12 +22,13 @@ public class TicketService {
 
     private final PermissionService permissionService;
 
-    public List<Ticket> getTicketAll() {
-        return ticketRepository.findAll();
+    public List<TicketDao> getPublicTicketList() {
+        return ticketRepository.findPublicAll();
     }
 
     public List<TicketDao> getTicketListByUser(User user) {
-        if(user.isAdmin()) {
+
+        if (user.isAdmin()) {
             return ticketRepository.findAllTicketDaoList();
         }
 
@@ -49,20 +48,20 @@ public class TicketService {
             return null;
         }
 
-        return TicketDto.builder()
-                .content(ticket.content)
-                .status(ticket.status)
-                .permissions(ticket.permissions)
-                .build();
+        return ticketConvert.to(ticket);
     }
 
-    public TicketDto createTicket(TicketDto request) {
+    public TicketDto createTicket(User user, TicketDto request) {
+        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
+        permissions.add(
+                permissionService.getDefaultPermission(user)
+        );
+
         Ticket ticket = Ticket.builder()
+                .title(request.title)
                 .status(request.status)
                 .content(request.content)
-                .permissions(
-                        permissionService.addListIfNotExist(request.permissions)
-                )
+                .permissions(permissions)
                 .build();
 
         return ticketConvert.to(
@@ -80,11 +79,27 @@ public class TicketService {
             throw new RuntimeException("Not found ticket.");
         }
 
+        ticket.title = request.title;
         ticket.status = request.status;
         ticket.content = request.content;
-//        ticket.setPermissions(
-//                permissionService.addListIfNotExist(request.permissions)
-//        );
+        ticket.permissions = permissionService
+                .addListIfNotExist(request.permissions);
+
+        ticketRepository.save(ticket);
+    };
+
+    public void updateTicketStatus(User user, TicketDto request) {
+        Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
+        if (ticket == null) {
+            throw new IllegalArgumentException("Not found ticket.");
+        }
+
+        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
+            throw new RuntimeException("Not found ticket.");
+        }
+
+        ticket.title = request.title;
+        ticket.status = request.status;
 
         ticketRepository.save(ticket);
     };

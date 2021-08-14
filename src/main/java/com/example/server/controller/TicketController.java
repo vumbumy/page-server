@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,7 +36,7 @@ public class TicketController {
     @PostMapping("")
     public ResponseEntity<TicketDto> createTicket(@AuthenticationPrincipal User user, @RequestBody TicketDto request) {
         return ResponseEntity.ok(
-                ticketService.createTicket(request)
+                ticketService.createTicket(user, request)
         );
     }
 
@@ -48,11 +47,17 @@ public class TicketController {
         );
     }
 
-    @PutMapping("")
+    @PutMapping("/status")
+    public ResponseEntity<Object> updateTicketStatus(@AuthenticationPrincipal User user, @RequestBody TicketDto request) {
+        ticketService.updateTicketStatus(user, request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/")
     public ResponseEntity<Object> updateTicket(@AuthenticationPrincipal User user, @RequestBody TicketDto request) {
         ticketService.updateTicket(user, request);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

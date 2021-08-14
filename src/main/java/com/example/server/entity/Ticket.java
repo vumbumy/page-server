@@ -17,15 +17,15 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Long contentNo, List<Permission> permissions, String content, Status status) {
+    public Ticket(Long contentNo, List<Permission> permissions, String title, String content, Status status) {
         super(contentNo, permissions);
+        this.title = title;
         this.content = content;
         this.status = status;
     }
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    public Long ticketNo;
+    @Column
+    public String title;
 
     @Column
     public String content;
@@ -33,5 +33,6 @@ public class Ticket extends BaseContent {
     @Column
     public Status status;
 
-
+    @Column
+    public Boolean isPublic;
 }

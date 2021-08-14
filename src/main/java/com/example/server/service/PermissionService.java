@@ -1,6 +1,8 @@
 package com.example.server.service;
 
+import com.example.server.constant.AccessRight;
 import com.example.server.entity.Permission;
+import com.example.server.entity.User;
 import com.example.server.repository.PermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,13 +25,22 @@ public class PermissionService {
                 .collect(Collectors.toList());
     }
 
+    public Permission getDefaultPermission(User user) {
+        return this.createIfNotExist(
+                Permission.builder()
+                        .userNo(user.getUserNo())
+                        .accessRight(AccessRight.WRITE)
+                        .build()
+        );
+    }
+
     public Permission createIfNotExist(Permission permission) {
         return permissionRepository.findPermissionByUserNoAndAccessRight(permission.userNo, permission.accessRight)
                 .orElseGet(() -> permissionRepository.save(permission));
     }
 
     public List<Permission> addListIfNotExist(List<Permission> permissions) {
-        if (CollectionUtils.isEmpty(permissions)) return null;
+        if (CollectionUtils.isEmpty(permissions)) return new ArrayList<>();
 
         List<Permission> permissionList = new ArrayList<>();
         for(Permission permission : permissions) {
