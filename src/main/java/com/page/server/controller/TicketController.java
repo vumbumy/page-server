@@ -19,17 +19,10 @@ import java.util.List;
 public class TicketController {
     private final TicketService ticketService;
 
-    @GetMapping("/status")
-    public ResponseEntity<Ticket.Status[]> getStatus() {
-        return ResponseEntity.ok(
-                Ticket.Status.values()
-        );
-    }
-
     @GetMapping("")
-    public ResponseEntity<List<TicketDao>> getTickets(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<TicketDao>> getTickets(@AuthenticationPrincipal User user, @RequestParam(required = false) Ticket.Status status) {
         return ResponseEntity.ok(
-                ticketService.getTicketListByUser(user)
+                ticketService.getTicketListByUser(user, status)
         );
     }
 
@@ -54,7 +47,7 @@ public class TicketController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<Object> updateTicket(@AuthenticationPrincipal User user, @RequestBody TicketDto request) {
         ticketService.updateTicket(user, request);
 

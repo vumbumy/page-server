@@ -18,10 +18,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "        LEFT JOIN\n" +
             "    _content_permissions AS cp ON cp.content_no = tk.content_no\n" +
             "WHERE\n" +
-            "    cp.permission_no IN (?1)",
+            "    ?2 IS NULL OR tk.status = ?2\n" +
+            "    AND cp.permission_no IN (?1)",
             nativeQuery = true
     )
-    List<TicketDao> findAllByPermissions(List<Long> permissionNoList);
+    List<TicketDao> findAllByPermissions(List<Long> permissionNoList, Integer status);
 
     @Query(value =
             "SELECT \n" +
@@ -40,11 +41,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "SELECT \n" +
                     "    tk.content_no as ticketNo,\n" +
                     "    tk.title as title,\n" +
-                    "    tk.content as content,\n" +
                     "    tk.status as status\n" +
                     "FROM\n" +
-                    "    _ticket AS tk\n",
+                    "    _ticket AS tk\n" +
+                    "WHERE\n" +
+                    "    ?1 IS NULL OR tk.status = ?1\n",
             nativeQuery = true
     )
-    List<TicketDao> findAllTicketDaoList();
+    List<TicketDao> findAllTicketDaoList(Integer status);
 }

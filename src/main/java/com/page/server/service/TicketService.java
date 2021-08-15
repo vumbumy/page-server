@@ -26,14 +26,15 @@ public class TicketService {
         return ticketRepository.findPublicAll();
     }
 
-    public List<TicketDao> getTicketListByUser(User user) {
+    public List<TicketDao> getTicketListByUser(User user, Ticket.Status status) {
+        Integer statusNum = status != null ? status.ordinal() : null;
 
         if (user.isAdmin()) {
-            return ticketRepository.findAllTicketDaoList();
+            return ticketRepository.findAllTicketDaoList(statusNum);
         }
 
         return ticketRepository.findAllByPermissions(
-                permissionService.getPermissionNoListByUserNo(user.getUserNo())
+                permissionService.getPermissionNoListByUserNo(user.getUserNo()), statusNum
         );
     }
 
