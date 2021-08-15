@@ -8,7 +8,7 @@
         <version>2.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>com.page</groupId>
     <artifactId>server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Server</name>
@@ -80,7 +80,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.server.ServerApplication</mainClass>
+                            <mainClass>com.page.server.ServerApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,0 +1,43 @@
+package com.page.server.entity;
+
+import com.page.server.constant.AccessRight;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "_PERMISSION")
+@NoArgsConstructor
+public class Permission implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
+    public Long permissionNo;
+
+    @Column
+    public Long userNo;
+
+    @Column
+    public Long groupNo;
+
+    @NotNull
+    @Column
+    public AccessRight accessRight;
+
+    @Builder
+    public Permission(Long permissionNo, Long userNo, Long groupNo, AccessRight accessRight) {
+        this.permissionNo = permissionNo;
+        this.userNo = userNo;
+        this.groupNo = groupNo;
+        this.accessRight = accessRight;
+    }
+
+    public Boolean hasUserNo(Long userNo){
+        return this.userNo.equals(userNo);
+    }
+}
