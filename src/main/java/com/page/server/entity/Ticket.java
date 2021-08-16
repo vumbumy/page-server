@@ -17,11 +17,13 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Long contentNo, List<Permission> permissions, String title, String content, Status status) {
+    public Ticket(Long contentNo, List<Permission> permissions, String title, String content, Status status, Boolean isPublic, Boolean deleted) {
         super(contentNo, permissions);
         this.title = title;
         this.content = content;
         this.status = status;
+        this.isPublic = isPublic;
+        this.deleted = deleted;
     }
 
     @Column
@@ -35,4 +37,7 @@ public class Ticket extends BaseContent {
 
     @Column
     public Boolean isPublic;
+
+    @Column
+    public Boolean deleted;
 }

@@ -53,4 +53,11 @@ public class TicketController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/{ticketNo}")
+    public ResponseEntity<Object> deleteTicket(@AuthenticationPrincipal User user, @PathVariable Long ticketNo) {
+        ticketService.deleteTicket(user, ticketNo);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

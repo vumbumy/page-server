@@ -10,4 +10,6 @@ public interface TicketDao {
     public String getContent();
 
     public Ticket.Status getStatus();
+
+    public Boolean getIsPublic();
 }

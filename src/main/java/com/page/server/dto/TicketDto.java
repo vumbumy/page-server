@@ -11,6 +11,7 @@ public class TicketDto {
     public Long ticketNo;
     public String title;
     public String content;
+    public Boolean isPublic;
     public Ticket.Status status;
     public List<Permission> permissions;
 }

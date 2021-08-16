@@ -63,6 +63,7 @@ public class TicketService {
                 .status(request.status)
                 .content(request.content)
                 .permissions(permissions)
+                .isPublic(request.isPublic)
                 .build();
 
         return ticketConvert.to(
@@ -85,6 +86,7 @@ public class TicketService {
         ticket.content = request.content;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
+        ticket.isPublic = request.isPublic;
 
         ticketRepository.save(ticket);
     };
@@ -104,4 +106,19 @@ public class TicketService {
 
         ticketRepository.save(ticket);
     };
+
+    public void deleteTicket(User user, Long ticketNo) {
+        Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
+        if (ticket == null) {
+            throw new IllegalArgumentException("Not found ticket.");
+        }
+
+        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
+            throw new RuntimeException("Not found ticket.");
+        }
+
+        ticket.deleted = true;
+
+        ticketRepository.save(ticket);
+    }
 }

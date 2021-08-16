@@ -26,6 +26,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query(value =
             "SELECT \n" +
+                    "    tk.content_no as ticketNo,\n" +
                     "    tk.title as title,\n" +
                     "    tk.content as content,\n" +
                     "    tk.status as status\n" +
