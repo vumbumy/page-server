@@ -11,5 +11,5 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 sendgrid:
-  api_key: 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
-  from: vumy@outlook.kr
+  api_key: SENDGRID_API_KEY
+  from: SENDGRID_FROM_EMAIL

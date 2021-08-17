@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 @NoArgsConstructor
@@ -17,13 +18,11 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Long contentNo, List<Permission> permissions, String title, String content, Status status, Boolean isPublic, Boolean deleted) {
-        super(contentNo, permissions);
+    public Ticket(Timestamp createdAt, Timestamp updatedAt, Long contentNo, List<Permission> permissions, Long managerNo, Boolean isPublic, Boolean deleted, String title, String content, Status status) {
+        super(createdAt, updatedAt, contentNo, permissions, managerNo, isPublic, deleted);
         this.title = title;
         this.content = content;
         this.status = status;
-        this.isPublic = isPublic;
-        this.deleted = deleted;
     }
 
     @Column
@@ -34,10 +33,4 @@ public class Ticket extends BaseContent {
 
     @Column
     public Status status;
-
-    @Column
-    public Boolean isPublic;
-
-    @Column
-    public Boolean deleted;
 }

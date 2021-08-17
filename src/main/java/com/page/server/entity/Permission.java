@@ -38,6 +38,10 @@ public class Permission implements Serializable {
     }
 
     public Boolean hasUserNo(Long userNo){
-        return this.userNo.equals(userNo);
+        return this.userNo != null && this.userNo.equals(userNo);
+    }
+
+    public Boolean hasGroupNo(Long groupNo){
+        return this.groupNo != null && this.groupNo.equals(groupNo);
     }
 }

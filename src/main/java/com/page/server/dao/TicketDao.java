@@ -3,13 +3,13 @@ package com.page.server.dao;
 import com.page.server.entity.Ticket;
 
 public interface TicketDao {
-    public Long getTicketNo();
+    Long getTicketNo();
 
-    public String getTitle();
+    String getTitle();
 
-    public String getContent();
+    String getContent();
 
-    public Ticket.Status getStatus();
+    Ticket.Status getStatus();
 
-    public Boolean getIsPublic();
+    Boolean getIsPublic();
 }

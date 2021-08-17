@@ -1,6 +1,7 @@
 package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
+import com.page.server.dao.PermissionDao;
 import com.page.server.entity.Permission;
 import com.page.server.entity.User;
 import com.page.server.repository.PermissionRepository;
@@ -17,12 +18,8 @@ import java.util.stream.Collectors;
 public class PermissionService {
     private final PermissionRepository permissionRepository;
 
-    public List<Long> getPermissionNoListByUserNo(Long userNo) {
-        List<Permission> permissionList = permissionRepository.findAllByUserNo(userNo);
-
-        return permissionList.stream()
-                .map(permission -> permission.permissionNo)
-                .collect(Collectors.toList());
+    public List<PermissionDao> getPermissionDaoListByUserNo(Long userNo) {
+        return permissionRepository.findPermissionDaoByUserNo(userNo);
     }
 
     public Permission getDefaultPermission(User user) {

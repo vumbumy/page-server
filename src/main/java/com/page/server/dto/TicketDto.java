@@ -14,4 +14,5 @@ public class TicketDto {
     public Boolean isPublic;
     public Ticket.Status status;
     public List<Permission> permissions;
+    public Boolean isWriteable;
 }

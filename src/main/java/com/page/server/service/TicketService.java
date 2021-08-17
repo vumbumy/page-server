@@ -1,5 +1,7 @@
 package com.page.server.service;
 
+import com.page.server.constant.AccessRight;
+import com.page.server.dao.PermissionDao;
 import com.page.server.dao.TicketDao;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.Permission;
@@ -8,12 +10,15 @@ import com.page.server.entity.User;
 import com.page.server.repository.TicketRepository;
 import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TicketService {
@@ -26,16 +31,48 @@ public class TicketService {
         return ticketRepository.findPublicAll();
     }
 
-    public List<TicketDao> getTicketListByUser(User user, Ticket.Status status) {
+    public List<TicketDto> getTicketListByUser(User user, Ticket.Status status) {
         Integer statusNum = status != null ? status.ordinal() : null;
 
+        List<TicketDto> dtoList = new ArrayList<>();
         if (user.isAdmin()) {
-            return ticketRepository.findAllTicketDaoList(statusNum);
+            List<TicketDao> daoList = ticketRepository.findAllTicketDaoList(statusNum);
+
+            daoList.forEach(ticketDao -> dtoList.add(TicketDto.builder()
+                    .ticketNo(ticketDao.getTicketNo())
+                    .title(ticketDao.getTitle())
+                    .content(ticketDao.getContent())
+                    .status(ticketDao.getStatus())
+                    .isWriteable(Boolean.TRUE)
+                    .build())
+            );
+        } else {
+            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.getUserNo());
+
+            Map<Long, AccessRight> accessRightMap = pDaoList.stream()
+                    .collect(Collectors.toMap(PermissionDao::getContentNo, PermissionDao::getAccessRight));
+
+            List<TicketDao> tDaoList = ticketRepository.findAllByTicketNoContains(
+                    accessRightMap.keySet(),
+                    statusNum
+            );
+
+            tDaoList.forEach(ticketDao -> {
+                AccessRight accessRight = accessRightMap.get(ticketDao.getTicketNo());
+
+                dtoList.add(TicketDto.builder()
+                        .ticketNo(ticketDao.getTicketNo())
+                        .title(ticketDao.getTitle())
+                        .content(ticketDao.getContent())
+                        .status(ticketDao.getStatus())
+                        .isWriteable(
+                                accessRight != null && accessRight.equals(AccessRight.WRITE)
+                        )
+                        .build());
+            });
         }
 
-        return ticketRepository.findAllByPermissions(
-                permissionService.getPermissionNoListByUserNo(user.getUserNo()), statusNum
-        );
+        return dtoList;
     }
 
 
@@ -45,7 +82,7 @@ public class TicketService {
             return null;
         }
 
-        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
+        if(!user.isAdmin() && !ticket.isReadable(user.getUserNo(), user.getGroupNo())) {
             return null;
         }
 
@@ -54,16 +91,20 @@ public class TicketService {
 
     public TicketDto createTicket(User user, TicketDto request) {
         List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
-        permissions.add(
-                permissionService.getDefaultPermission(user)
+
+        Timestamp timestampNow = Timestamp.from(
+                Instant.now()
         );
 
         Ticket ticket = Ticket.builder()
+                .managerNo(user.getUserNo())
                 .title(request.title)
                 .status(request.status)
                 .content(request.content)
                 .permissions(permissions)
                 .isPublic(request.isPublic)
+                .createdAt(timestampNow)
+                .updatedAt(timestampNow)
                 .build();
 
         return ticketConvert.to(
@@ -77,9 +118,13 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
-            throw new RuntimeException("Not found ticket.");
+        if(!user.isAdmin() && !ticket.isWriteable(user.getUserNo(), user.getGroupNo())) {
+            throw new RuntimeException("You don't have permission.");
         }
+
+        Timestamp timestampNow = Timestamp.from(
+                Instant.now()
+        );
 
         ticket.title = request.title;
         ticket.status = request.status;
@@ -87,6 +132,7 @@ public class TicketService {
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
         ticket.isPublic = request.isPublic;
+        ticket.updatedAt = timestampNow;
 
         ticketRepository.save(ticket);
     };
@@ -97,12 +143,17 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
-            throw new RuntimeException("Not found ticket.");
+        if(!user.isAdmin() && !ticket.isWriteable(user.getUserNo(), user.getGroupNo())) {
+            throw new RuntimeException("You don't have permission.");
         }
+
+        Timestamp timestampNow = Timestamp.from(
+                Instant.now()
+        );
 
         ticket.title = request.title;
         ticket.status = request.status;
+        ticket.updatedAt = timestampNow;
 
         ticketRepository.save(ticket);
     };
@@ -113,7 +164,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isMatch(user.getUserNo())) {
+        if(!user.isAdmin() && !ticket.isWriteable(user.getUserNo(), user.getGroupNo())) {
             throw new RuntimeException("Not found ticket.");
         }
 

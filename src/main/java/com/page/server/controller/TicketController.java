@@ -1,6 +1,5 @@
 package com.page.server.controller;
 
-import com.page.server.dao.TicketDao;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.Ticket;
 import com.page.server.entity.User;
@@ -20,7 +19,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping("")
-    public ResponseEntity<List<TicketDao>> getTickets(@AuthenticationPrincipal User user, @RequestParam(required = false) Ticket.Status status) {
+    public ResponseEntity<List<TicketDto>> getTickets(@AuthenticationPrincipal User user, @RequestParam(required = false) Ticket.Status status) {
         return ResponseEntity.ok(
                 ticketService.getTicketListByUser(user, status)
         );
