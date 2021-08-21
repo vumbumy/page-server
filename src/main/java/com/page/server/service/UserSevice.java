@@ -28,17 +28,18 @@ public class UserSevice {
     private final PasswordEncoder passwordEncoder;
 
     public UserDto.Info createUser(SignDto.InRequest request) throws IllegalArgumentException{
-        if(userRepository.findByUserName(request.userName).isPresent()) {
-            throw new IllegalArgumentException("You are already registered with this email!");
-        }
-
         User user = userConvert.from(request);
 
         user.setPassword(passwordEncoder.encode(request.password));
+        user.setIsActivated(false);
 
         return userConvert.to(
                 userRepository.save(user)
         );
+    }
+
+    public Boolean getUserIsActivated(String userName) {
+        return userRepository.findUserNameIsActivated(userName);
     }
 
     public UserDto.Info updateUser(UserDto.UpdateRequest updated) throws IllegalArgumentException{
@@ -71,7 +72,7 @@ public class UserSevice {
 
     public User getUserByUserName(String userName) throws IllegalArgumentException {
         return userRepository.findByUserName(userName)
-                .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
+                .orElseThrow(() -> new IllegalArgumentException("Can't find account."));
     }
 
     public List<User> getAllUserList() {

@@ -4,11 +4,10 @@ import com.page.server.config.JwtTokenProvider;
 import com.page.server.dto.SignDto;
 import com.page.server.dto.UserDto;
 import com.page.server.entity.User;
+import com.page.server.service.MailService;
 import com.page.server.service.UserSevice;
-import com.sendgrid.*;
+import com.sendgrid.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.security.sasl.AuthenticationException;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,18 +25,13 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserSevice userSevice;
+    private final MailService mailService;
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Value("${sendgrid.api-key}")
-    private String SENDGRID_API_KEY;
-
-    @Value("${sendgrid.from}")
-    private String SENDGRID_FROM;
-
     @PostMapping("/sign/up")
-    public ResponseEntity<UserDto.Info> createUser(@RequestBody SignDto.InRequest request) {
+    public Response createUser(@RequestBody SignDto.InRequest request) {
 
         String regex = "^(.+)@(.+)$";
 
@@ -49,35 +42,29 @@ public class AuthController {
             throw new IllegalArgumentException("This email is not available.");
         }
 
-        Email from = new Email(SENDGRID_FROM);
-        String subject = "Sign in notification from VUMY";
-        Email to = new Email(request.userName);
-        Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
-        Mail mail = new Mail(from, subject, to, content);
-
-        SendGrid sg = new SendGrid(SENDGRID_API_KEY);
-
-        Request sgRequest = new Request();
-        try {
-            sgRequest.setMethod(Method.POST);
-            sgRequest.setEndpoint("mail/send");
-            sgRequest.setBody(mail.build());
-
-            sg.api(sgRequest);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        Boolean isActivated = userSevice.getUserIsActivated(request.userName);
+        if (isActivated == null) {
+            userSevice.createUser(request);
         }
 
-        return ResponseEntity.ok(
-                userSevice.createUser(request)
+        if (isActivated != null && isActivated) {
+            throw new IllegalArgumentException("You are already registered with this email!");
+        }
+
+        return mailService.sendMessage(
+                request.userName,
+                "Sign in notification from VUMY",
+                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         );
     }
 
     @PostMapping("/sign/in")
     public ResponseEntity<SignDto.InResponse> getToken(@RequestBody SignDto.InRequest request) throws AuthenticationException {
         User user = userSevice.getUserByUserName(request.userName);
+        if (user == null){
+            throw new IllegalArgumentException("Can't find account.");
+        }
+
         if (!user.isEnabled()) {
             throw new AuthenticationException("No visitors allowed.");
         }

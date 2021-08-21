@@ -45,6 +45,9 @@ public class User implements UserDetails {
     @Column
     private Long groupNo;
 
+    @Column
+    private Boolean isActivated;
+
     // return this.roles.stream()
     //  .map(SimpleGrantedAuthority::new)
     //  .collect(Collectors.toList());
