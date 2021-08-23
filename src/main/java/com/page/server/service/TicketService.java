@@ -31,14 +31,14 @@ public class TicketService {
         return ticketRepository.findPublicAll();
     }
 
-    public List<TicketDto> getTicketListByUser(User user, Ticket.Status status) {
+    public List<TicketDto.Response> getTicketListByUser(User user, Ticket.Status status) {
         Integer statusNum = status != null ? status.ordinal() : null;
 
-        List<TicketDto> dtoList = new ArrayList<>();
+        List<TicketDto.Response> dtoList = new ArrayList<>();
         if (user.isAdmin()) {
             List<TicketDao> daoList = ticketRepository.findAllTicketDaoList(statusNum);
 
-            daoList.forEach(ticketDao -> dtoList.add(TicketDto.builder()
+            daoList.forEach(ticketDao -> dtoList.add(TicketDto.Response.builder()
                     .ticketNo(ticketDao.getTicketNo())
                     .title(ticketDao.getTitle())
 //                    .content(ticketDao.getContent())
@@ -60,7 +60,7 @@ public class TicketService {
             tDaoList.forEach(ticketDao -> {
                 AccessRight accessRight = accessRightMap.get(ticketDao.getTicketNo());
 
-                dtoList.add(TicketDto.builder()
+                dtoList.add(TicketDto.Response.builder()
                         .ticketNo(ticketDao.getTicketNo())
                         .title(ticketDao.getTitle())
 //                        .content(ticketDao.getContent())
@@ -76,7 +76,7 @@ public class TicketService {
     }
 
 
-    public TicketDto getTicketByUser(User user, Long ticketNo) {
+    public TicketDto.Response getTicketByUser(User user, Long ticketNo) {
         Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
         if (ticket == null) {
             return null;
@@ -89,7 +89,7 @@ public class TicketService {
         return ticketConvert.to(ticket);
     }
 
-    public TicketDto createTicket(User user, TicketDto request) {
+    public TicketDto.Response createTicket(User user, TicketDto.Request request) {
         List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
 
         Timestamp timestampNow = Timestamp.from(
@@ -112,7 +112,7 @@ public class TicketService {
         );
     };
 
-    public void updateTicket(User user, TicketDto request) {
+    public void updateTicket(User user, TicketDto.Request request) {
         Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
         if (ticket == null) {
             throw new IllegalArgumentException("Not found ticket.");

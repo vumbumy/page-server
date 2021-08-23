@@ -40,7 +40,6 @@ public class BaseContent extends BaseTimeEntity{
         this.deleted = deleted;
     }
 
-
     public boolean isManager (Long userNo) {
         return managerNo != null && managerNo.equals(userNo);
     }

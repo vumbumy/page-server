@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 public interface TicketConvert {
 
     @Mapping(source = "contentNo", target = "ticketNo")
-    TicketDto to(Ticket ticket);
+    TicketDto.Response to(Ticket ticket);
 }

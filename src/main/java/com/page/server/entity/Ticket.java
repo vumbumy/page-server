@@ -20,14 +20,18 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Timestamp createdAt, Timestamp updatedAt, Long contentNo, List<Permission> permissions, Long managerNo, Boolean isPublic, Boolean deleted, String title, Status status) {
+    public Ticket(Timestamp createdAt, Timestamp updatedAt, Long contentNo, List<Permission> permissions, Long managerNo, Boolean isPublic, Boolean deleted, Long projectNo, String title, Status status) {
         super(createdAt, updatedAt, contentNo, permissions, managerNo, isPublic, deleted);
+        this.projectNo = projectNo;
         this.title = title;
         this.status = status;
     }
 
     @Column
     public String title;
+
+    @Column
+    public Long projectNo;
 
     @Column
     public Status status;
