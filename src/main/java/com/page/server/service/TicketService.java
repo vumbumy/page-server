@@ -41,7 +41,7 @@ public class TicketService {
             daoList.forEach(ticketDao -> dtoList.add(TicketDto.builder()
                     .ticketNo(ticketDao.getTicketNo())
                     .title(ticketDao.getTitle())
-                    .content(ticketDao.getContent())
+//                    .content(ticketDao.getContent())
                     .status(ticketDao.getStatus())
                     .isWriteable(Boolean.TRUE)
                     .build())
@@ -63,7 +63,7 @@ public class TicketService {
                 dtoList.add(TicketDto.builder()
                         .ticketNo(ticketDao.getTicketNo())
                         .title(ticketDao.getTitle())
-                        .content(ticketDao.getContent())
+//                        .content(ticketDao.getContent())
                         .status(ticketDao.getStatus())
                         .isWriteable(
                                 accessRight != null && accessRight.equals(AccessRight.WRITE)
@@ -100,7 +100,7 @@ public class TicketService {
                 .managerNo(user.getUserNo())
                 .title(request.title)
                 .status(request.status)
-                .content(request.content)
+//                .content(request.content)
                 .permissions(permissions)
                 .isPublic(request.isPublic)
                 .createdAt(timestampNow)
@@ -128,7 +128,7 @@ public class TicketService {
 
         ticket.title = request.title;
         ticket.status = request.status;
-        ticket.content = request.content;
+//        ticket.content = request.content;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
         ticket.isPublic = request.isPublic;

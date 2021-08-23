@@ -7,7 +7,7 @@ public interface TicketDao {
 
     String getTitle();
 
-    String getContent();
+//    String getContent();
 
     Ticket.Status getStatus();
 

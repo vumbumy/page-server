@@ -13,9 +13,10 @@ import java.io.Serializable;
 @Table(name = "_PERMISSION")
 @NoArgsConstructor
 public class Permission implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     public Long permissionNo;
 

@@ -56,7 +56,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "SELECT \n" +
             "    tk.content_no as ticketNo,\n" +
             "    tk.title as title,\n" +
-            "    tk.content as content,\n" +
+//            "    tk.content as content,\n" +
             "    tk.status as status\n" +
             "FROM\n" +
             "    _ticket AS tk\n" +
