@@ -28,7 +28,7 @@ public class TicketService {
     private final PermissionService permissionService;
 
     public List<TicketDao> getPublicTicketList() {
-        return ticketRepository.findPublicAll();
+        return ticketRepository.findAllShared();
     }
 
     public List<TicketDto.Response> getTicketListByUser(User user, Ticket.Status status) {
@@ -40,7 +40,7 @@ public class TicketService {
 
             daoList.forEach(ticketDao -> dtoList.add(TicketDto.Response.builder()
                     .ticketNo(ticketDao.getTicketNo())
-                    .title(ticketDao.getTitle())
+                    .ticketName(ticketDao.getTicketName())
 //                    .content(ticketDao.getContent())
                     .status(ticketDao.getStatus())
                     .isWriteable(Boolean.TRUE)
@@ -62,7 +62,7 @@ public class TicketService {
 
                 dtoList.add(TicketDto.Response.builder()
                         .ticketNo(ticketDao.getTicketNo())
-                        .title(ticketDao.getTitle())
+                        .ticketName(ticketDao.getTicketName())
 //                        .content(ticketDao.getContent())
                         .status(ticketDao.getStatus())
                         .isWriteable(
@@ -98,11 +98,11 @@ public class TicketService {
 
         Ticket ticket = Ticket.builder()
                 .managerNo(user.getUserNo())
-                .title(request.title)
+                .contentName(request.ticketName)
                 .status(request.status)
 //                .content(request.content)
                 .permissions(permissions)
-                .isPublic(request.isPublic)
+                .shared(request.shared)
                 .createdAt(timestampNow)
                 .updatedAt(timestampNow)
                 .build();
@@ -126,12 +126,12 @@ public class TicketService {
                 Instant.now()
         );
 
-        ticket.title = request.title;
+        ticket.contentName = request.ticketName;
         ticket.status = request.status;
 //        ticket.content = request.content;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
-        ticket.isPublic = request.isPublic;
+        ticket.shared = request.shared;
         ticket.updatedAt = timestampNow;
 
         ticketRepository.save(ticket);
@@ -151,7 +151,7 @@ public class TicketService {
                 Instant.now()
         );
 
-        ticket.title = request.title;
+        ticket.contentName = request.ticketName;
         ticket.status = request.status;
         ticket.updatedAt = timestampNow;
 

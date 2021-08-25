@@ -20,14 +20,11 @@ public class Permission implements Serializable {
     @JsonIgnore
     public Long permissionNo;
 
-    @Column
     public Long userNo;
 
-    @Column
     public Long groupNo;
 
     @NotNull
-    @Column
     public AccessRight accessRight;
 
     @Builder

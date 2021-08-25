@@ -1,5 +1,6 @@
 package com.page.server.entity;
 
+import com.sun.istack.NotNull;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -16,11 +17,12 @@ public class DataValue implements Serializable {
     private Long valueNo;
 
     @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_no")
+    @NotNull
     private DataType type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "CONTENT_NO")
-    private Ticket ticket;
+    @NotNull
+    private Long contentNo;
 
     private String value;
 }

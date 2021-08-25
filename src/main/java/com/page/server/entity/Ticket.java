@@ -1,10 +1,10 @@
 package com.page.server.entity;
 
 import com.page.server.entity.base.BaseContent;
+import com.sun.istack.NotNull;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Timestamp;
@@ -20,19 +20,15 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Timestamp createdAt, Timestamp updatedAt, Long contentNo, List<Permission> permissions, Long managerNo, Boolean isPublic, Boolean deleted, Long projectNo, String title, Status status) {
-        super(createdAt, updatedAt, contentNo, permissions, managerNo, isPublic, deleted);
+    public Ticket(Timestamp createdAt, Timestamp updatedAt, Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted, Long projectNo, Status status) {
+        super(createdAt, updatedAt, contentNo, contentName, permissions, managerNo, shared, deleted);
         this.projectNo = projectNo;
-        this.title = title;
         this.status = status;
     }
 
-    @Column
-    public String title;
-
-    @Column
+    @NotNull
     public Long projectNo;
 
-    @Column
+    @NotNull
     public Status status;
 }

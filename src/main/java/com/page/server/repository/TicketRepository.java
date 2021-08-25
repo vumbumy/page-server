@@ -12,7 +12,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value =
             "SELECT \n" +
             "    tk.content_no as ticketNo,\n" +
-            "    tk.title as title,\n" +
+            "    tk.content_name as ticketName,\n" +
             "    tk.status as status\n" +
             "FROM\n" +
             "    _ticket AS tk\n" +
@@ -27,13 +27,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
 //    @Query(value =
 //            "SELECT DISTINCT\n" +
-//                    "    tk.content_no, tk.title, tk.status\n" +
+//                    "    tk.content_no, tk.content_name, tk.status\n" +
 //                    "FROM\n" +
 //                    "    _ticket AS tk\n" +
 //                    "        LEFT JOIN\n" +
 //                    "    _content_permissions AS cp ON cp.content_no = tk.content_no\n" +
 //                    "WHERE\n" +
-//                    "    tk.is_public OR cp.permission_no IN (?1)",
+//                    "    tk.shared OR cp.permission_no IN (?1)",
 //            nativeQuery = true
 //    )
 //    List<TicketDao> findAllByPermissions(List<Long> permissionNoList);
@@ -41,13 +41,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value =
             "SELECT \n" +
             "    tk.content_no AS ticketNo,\n" +
-            "    tk.title AS title,\n" +
+            "    tk.content_name AS ticketName,\n" +
             "    tk.status AS status\n" +
             "FROM\n" +
             "    _ticket AS tk\n" +
             "WHERE\n" +
             "    (?2 IS NULL OR tk.status = ?2)\n" +
-            "    AND (tk.is_public OR tk.content_no IN (?1))",
+            "    AND (tk.shared OR tk.content_no IN (?1))",
             nativeQuery = true
     )
     List<TicketDao> findAllByTicketNoContains(Set<Long> ticketNoList, Integer status);
@@ -55,21 +55,21 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value =
             "SELECT \n" +
             "    tk.content_no as ticketNo,\n" +
-            "    tk.title as title,\n" +
+            "    tk.content_name as ticketName,\n" +
 //            "    tk.content as content,\n" +
             "    tk.status as status\n" +
             "FROM\n" +
             "    _ticket AS tk\n" +
             "WHERE\n" +
-            "    tk.is_public",
+            "    tk.shared",
             nativeQuery = true
     )
-    List<TicketDao> findPublicAll();
+    List<TicketDao> findAllShared();
 
     @Query(value =
             "SELECT \n" +
             "    tk.content_no as ticketNo,\n" +
-            "    tk.title as title,\n" +
+            "    tk.content_name as ticketName,\n" +
             "    tk.status as status\n" +
             "FROM\n" +
             "    _ticket AS tk\n" +
