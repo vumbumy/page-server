@@ -1,6 +1,7 @@
 package com.page.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,8 +18,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "_USER")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class User implements UserDetails {
     private static final long serialVersionUID = 1L;

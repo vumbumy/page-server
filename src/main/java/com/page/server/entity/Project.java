@@ -1,12 +1,12 @@
 package com.page.server.entity;
 
 import com.page.server.entity.base.BaseContent;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,10 +15,8 @@ import java.util.List;
 public class Project extends BaseContent {
 
     public String description;
-
-    public Timestamp startedAt;
-
-    public Timestamp endedAt;
+    public Long startedAt;
+    public Long endedAt;
 
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
@@ -26,5 +24,14 @@ public class Project extends BaseContent {
             name = "_PROJECT_TYPES",
             joinColumns = @JoinColumn(name = "PROJECT_NO"),
             inverseJoinColumns = @JoinColumn(name = "TYPE_NO"))
-    List<DataType> types;
+    public List<Type> types;
+
+    @Builder
+    public Project(Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted, String description, Long startedAt, Long endedAt, List<Type> types) {
+        super(contentNo, contentName, permissions, managerNo, shared, deleted);
+        this.description = description;
+        this.startedAt = startedAt;
+        this.endedAt = endedAt;
+        this.types = types;
+    }
 }

@@ -1,12 +1,12 @@
 package com.page.server.entity;
 
-import com.page.server.constant.AccessRight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
+import com.page.server.constant.AccessRight;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity

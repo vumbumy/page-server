@@ -9,12 +9,13 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.List;
 
 @NoArgsConstructor
 @MappedSuperclass
 public class BaseContent extends BaseTimeEntity{
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long contentNo;
@@ -36,8 +37,7 @@ public class BaseContent extends BaseTimeEntity{
     public Boolean deleted;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public BaseContent(Timestamp createdAt, Timestamp updatedAt, Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted) {
-        super(createdAt, updatedAt);
+    public BaseContent(Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted) {
         this.contentNo = contentNo;
         this.contentName = contentName;
         this.permissions = permissions;
@@ -55,7 +55,7 @@ public class BaseContent extends BaseTimeEntity{
                 .anyMatch(permission -> permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo));
     }
 
-    public boolean isWriteable (Long userNo, Long groupNo) {
+    public boolean isWriteable(Long userNo, Long groupNo) {
         return this.isManager(userNo) || this.permissions.stream()
                 .anyMatch(permission -> (permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo)) && permission.accessRight.equals(AccessRight.WRITE));
     }

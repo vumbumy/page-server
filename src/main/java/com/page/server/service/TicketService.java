@@ -12,8 +12,6 @@ import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +41,7 @@ public class TicketService {
                     .ticketName(ticketDao.getTicketName())
 //                    .content(ticketDao.getContent())
                     .status(ticketDao.getStatus())
-                    .isWriteable(Boolean.TRUE)
+                    .writeable(Boolean.TRUE)
                     .build())
             );
         } else {
@@ -65,7 +63,7 @@ public class TicketService {
                         .ticketName(ticketDao.getTicketName())
 //                        .content(ticketDao.getContent())
                         .status(ticketDao.getStatus())
-                        .isWriteable(
+                        .writeable(
                                 accessRight != null && accessRight.equals(AccessRight.WRITE)
                         )
                         .build());
@@ -90,21 +88,17 @@ public class TicketService {
     }
 
     public TicketDto.Response createTicket(User user, TicketDto.Request request) {
-        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
 
-        Timestamp timestampNow = Timestamp.from(
-                Instant.now()
-        );
+        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
 
         Ticket ticket = Ticket.builder()
                 .managerNo(user.getUserNo())
                 .contentName(request.ticketName)
+                .projectNo(request.projectNo)
                 .status(request.status)
 //                .content(request.content)
                 .permissions(permissions)
                 .shared(request.shared)
-                .createdAt(timestampNow)
-                .updatedAt(timestampNow)
                 .build();
 
         return ticketConvert.to(
@@ -122,17 +116,12 @@ public class TicketService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        Timestamp timestampNow = Timestamp.from(
-                Instant.now()
-        );
-
         ticket.contentName = request.ticketName;
         ticket.status = request.status;
 //        ticket.content = request.content;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
         ticket.shared = request.shared;
-        ticket.updatedAt = timestampNow;
 
         ticketRepository.save(ticket);
     };
@@ -147,13 +136,9 @@ public class TicketService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        Timestamp timestampNow = Timestamp.from(
-                Instant.now()
-        );
-
+        ticket.projectNo = request.ticketNo;
         ticket.contentName = request.ticketName;
         ticket.status = request.status;
-        ticket.updatedAt = timestampNow;
 
         ticketRepository.save(ticket);
     };

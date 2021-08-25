@@ -1,28 +1,28 @@
 package com.page.server.entity;
 
-import com.sun.istack.NotNull;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "_TYPE")
-public class DataType implements Serializable {
+@Table(name = "_VALUE")
+public class Value implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    public enum Type {
-        String, Number
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long typeNo;
+    public Long valueNo;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_no")
+    @NotNull
+    public Type type;
 
     @NotNull
-    Type value;
+    public Long contentNo;
 
-    @NotNull
-    Boolean required;
+    public String dataValue;
 }
