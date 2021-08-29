@@ -1,32 +1,31 @@
 package com.page.server.entity;
 
-import com.page.server.constant.AccessRight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
+import com.page.server.constant.AccessRight;
+import com.page.server.entity.base.BaseTimeEntity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "_PERMISSION")
 @NoArgsConstructor
-public class Permission implements Serializable {
+public class Permission extends BaseTimeEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     public Long permissionNo;
 
-    @Column
     public Long userNo;
 
-    @Column
     public Long groupNo;
 
     @NotNull
-    @Column
     public AccessRight accessRight;
 
     @Builder

@@ -12,8 +12,6 @@ import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,22 +26,22 @@ public class TicketService {
     private final PermissionService permissionService;
 
     public List<TicketDao> getPublicTicketList() {
-        return ticketRepository.findPublicAll();
+        return ticketRepository.findAllShared();
     }
 
-    public List<TicketDto> getTicketListByUser(User user, Ticket.Status status) {
+    public List<TicketDto.Response> getTicketListByUser(User user, Ticket.Status status) {
         Integer statusNum = status != null ? status.ordinal() : null;
 
-        List<TicketDto> dtoList = new ArrayList<>();
+        List<TicketDto.Response> dtoList = new ArrayList<>();
         if (user.isAdmin()) {
             List<TicketDao> daoList = ticketRepository.findAllTicketDaoList(statusNum);
 
-            daoList.forEach(ticketDao -> dtoList.add(TicketDto.builder()
+            daoList.forEach(ticketDao -> dtoList.add(TicketDto.Response.builder()
                     .ticketNo(ticketDao.getTicketNo())
-                    .title(ticketDao.getTitle())
-                    .content(ticketDao.getContent())
+                    .ticketName(ticketDao.getTicketName())
+//                    .content(ticketDao.getContent())
                     .status(ticketDao.getStatus())
-                    .isWriteable(Boolean.TRUE)
+                    .writeable(Boolean.TRUE)
                     .build())
             );
         } else {
@@ -60,12 +58,12 @@ public class TicketService {
             tDaoList.forEach(ticketDao -> {
                 AccessRight accessRight = accessRightMap.get(ticketDao.getTicketNo());
 
-                dtoList.add(TicketDto.builder()
+                dtoList.add(TicketDto.Response.builder()
                         .ticketNo(ticketDao.getTicketNo())
-                        .title(ticketDao.getTitle())
-                        .content(ticketDao.getContent())
+                        .ticketName(ticketDao.getTicketName())
+//                        .content(ticketDao.getContent())
                         .status(ticketDao.getStatus())
-                        .isWriteable(
+                        .writeable(
                                 accessRight != null && accessRight.equals(AccessRight.WRITE)
                         )
                         .build());
@@ -76,7 +74,7 @@ public class TicketService {
     }
 
 
-    public TicketDto getTicketByUser(User user, Long ticketNo) {
+    public TicketDto.Response getTicketByUser(User user, Long ticketNo) {
         Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
         if (ticket == null) {
             return null;
@@ -89,22 +87,18 @@ public class TicketService {
         return ticketConvert.to(ticket);
     }
 
-    public TicketDto createTicket(User user, TicketDto request) {
-        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
+    public TicketDto.Response createTicket(User user, TicketDto.Request request) {
 
-        Timestamp timestampNow = Timestamp.from(
-                Instant.now()
-        );
+        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
 
         Ticket ticket = Ticket.builder()
                 .managerNo(user.getUserNo())
-                .title(request.title)
+                .contentName(request.ticketName)
+                .projectNo(request.projectNo)
                 .status(request.status)
-                .content(request.content)
+//                .content(request.content)
                 .permissions(permissions)
-                .isPublic(request.isPublic)
-                .createdAt(timestampNow)
-                .updatedAt(timestampNow)
+                .shared(request.shared)
                 .build();
 
         return ticketConvert.to(
@@ -112,7 +106,7 @@ public class TicketService {
         );
     };
 
-    public void updateTicket(User user, TicketDto request) {
+    public void updateTicket(User user, TicketDto.Request request) {
         Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
         if (ticket == null) {
             throw new IllegalArgumentException("Not found ticket.");
@@ -122,17 +116,12 @@ public class TicketService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        Timestamp timestampNow = Timestamp.from(
-                Instant.now()
-        );
-
-        ticket.title = request.title;
+        ticket.contentName = request.ticketName;
         ticket.status = request.status;
-        ticket.content = request.content;
+//        ticket.content = request.content;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
-        ticket.isPublic = request.isPublic;
-        ticket.updatedAt = timestampNow;
+        ticket.shared = request.shared;
 
         ticketRepository.save(ticket);
     };
@@ -147,13 +136,9 @@ public class TicketService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        Timestamp timestampNow = Timestamp.from(
-                Instant.now()
-        );
-
-        ticket.title = request.title;
+        ticket.projectNo = request.ticketNo;
+        ticket.contentName = request.ticketName;
         ticket.status = request.status;
-        ticket.updatedAt = timestampNow;
 
         ticketRepository.save(ticket);
     };

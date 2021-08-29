@@ -4,8 +4,9 @@ import com.page.server.entity.base.BaseContent;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @NoArgsConstructor
@@ -18,19 +19,15 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Timestamp createdAt, Timestamp updatedAt, Long contentNo, List<Permission> permissions, Long managerNo, Boolean isPublic, Boolean deleted, String title, String content, Status status) {
-        super(createdAt, updatedAt, contentNo, permissions, managerNo, isPublic, deleted);
-        this.title = title;
-        this.content = content;
+    public Ticket(Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted, @NotNull Long projectNo, @NotNull Status status) {
+        super(contentNo, contentName, permissions, managerNo, shared, deleted);
+        this.projectNo = projectNo;
         this.status = status;
     }
 
-    @Column
-    public String title;
+    @NotNull
+    public Long projectNo;
 
-    @Column
-    public String content;
-
-    @Column
+    @NotNull
     public Status status;
 }
