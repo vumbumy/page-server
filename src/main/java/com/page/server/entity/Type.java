@@ -27,5 +27,11 @@ public class Type implements Serializable {
     @NotNull
     public DataType dataType;
 
-    public Boolean required;
+    public String defaultValue;
+
+    @NotNull
+    public Boolean required = false;
+
+    @NotNull
+    public Boolean deleted;
 }

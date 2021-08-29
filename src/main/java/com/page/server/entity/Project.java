@@ -18,7 +18,7 @@ public class Project extends BaseContent {
     public Long startedAt;
     public Long endedAt;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(
             name = "_PROJECT_TYPES",

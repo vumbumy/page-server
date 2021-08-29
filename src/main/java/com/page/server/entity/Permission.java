@@ -2,6 +2,7 @@ package com.page.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.page.server.constant.AccessRight;
+import com.page.server.entity.base.BaseTimeEntity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "_PERMISSION")
 @NoArgsConstructor
-public class Permission implements Serializable {
+public class Permission extends BaseTimeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

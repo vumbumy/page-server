@@ -1,6 +1,7 @@
 package com.page.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.page.server.entity.base.BaseTimeEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Table(name = "_USER")
 @Data
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User extends BaseTimeEntity implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id

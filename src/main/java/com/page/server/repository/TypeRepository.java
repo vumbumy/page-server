@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface TypeRepository extends JpaRepository<Type, Long> {
 
-    Optional<Type> findTypeByTypeNameAndAndDataType(String type, Type.DataType dataType);
+    Optional<Type> findTypeByTypeNameAndDataTypeAndRequiredAndDefaultValue(String type, Type.DataType dataType, Boolean required, String defaultValue);
 }

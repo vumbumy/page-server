@@ -1,7 +1,6 @@
 package com.page.server.controller;
 
 import com.page.server.dto.ProjectDto;
-import com.page.server.entity.Project;
 import com.page.server.entity.User;
 import com.page.server.service.ProjectService;
 import lombok.RequiredArgsConstructor;

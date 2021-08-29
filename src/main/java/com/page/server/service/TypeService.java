@@ -15,7 +15,7 @@ public class TypeService {
     private final TypeRepository typeRepository;
 
     public Type createIfNotExist(Type type) {
-        return typeRepository.findTypeByTypeNameAndAndDataType(type.typeName, type.dataType)
+        return typeRepository.findTypeByTypeNameAndDataTypeAndRequiredAndDefaultValue(type.typeName, type.dataType, type.required, type.defaultValue)
                 .orElseGet(() -> typeRepository.save(type));
     }
 

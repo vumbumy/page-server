@@ -1,5 +1,7 @@
 package com.page.server.controller;
 
+import com.page.server.entity.Ticket;
+import com.page.server.entity.Type;
 import com.page.server.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,20 @@ public class ConstantController {
         return ResponseEntity.ok(
                 roleRepository.findAll().stream().map(role -> role.value)
                         .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/tickets/status")
+    public ResponseEntity<Ticket.Status[]> getStatus() {
+        return ResponseEntity.ok(
+                Ticket.Status.values()
+        );
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<Type.DataType[]> getDataTypes() {
+        return ResponseEntity.ok(
+                Type.DataType.values()
         );
     }
 }

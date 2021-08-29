@@ -1,5 +1,6 @@
 package com.page.server.entity;
 
+import com.page.server.entity.base.BaseTimeEntity;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "_VALUE")
-public class Value implements Serializable {
+public class Value extends BaseTimeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

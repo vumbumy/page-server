@@ -2,7 +2,6 @@ package com.page.server.controller;
 
 import com.page.server.dao.ProjectDao;
 import com.page.server.dao.TicketDao;
-import com.page.server.entity.Ticket;
 import com.page.server.service.ProjectService;
 import com.page.server.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +16,6 @@ import java.util.List;
 public class PublicController {
     private final TicketService ticketService;
     private final ProjectService projectService;
-
-    @GetMapping("/tickets/status")
-    public ResponseEntity<Ticket.Status[]> getStatus() {
-        return ResponseEntity.ok(
-                Ticket.Status.values()
-        );
-    }
 
     @GetMapping("/projects")
     public ResponseEntity<List<ProjectDao>> getProjects() {
