@@ -1,11 +1,15 @@
 package com.page.server.dao;
 
-import com.page.server.entity.Project;
+import java.time.LocalDateTime;
 
 public interface ProjectDao {
     Long getProjectNo();
 
     String getProjectName();
 
-    Boolean getShared();
+    String getManagerName();
+
+    Integer getTicketCount();
+
+    LocalDateTime getCreatedAt();
 }

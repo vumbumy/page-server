@@ -19,7 +19,7 @@ public class Ticket extends BaseContent {
     }
 
     @Builder
-    public Ticket(Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted, @NotNull Long projectNo, @NotNull Status status) {
+    public Ticket(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean shared, Boolean deleted, @NotNull Long projectNo, @NotNull Status status) {
         super(contentNo, contentName, permissions, managerNo, shared, deleted);
         this.projectNo = projectNo;
         this.status = status;

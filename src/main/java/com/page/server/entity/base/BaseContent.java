@@ -9,11 +9,12 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @NoArgsConstructor
 @MappedSuperclass
-public class BaseContent extends BaseTimeEntity{
+public class BaseContent extends BaseTimeEntity {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -30,6 +31,7 @@ public class BaseContent extends BaseTimeEntity{
             inverseJoinColumns = @JoinColumn(name = "PERMISSION_NO"))
     public List<Permission> permissions;
 
+    @NotNull
     public Long managerNo;
 
     public Boolean shared;
@@ -37,7 +39,7 @@ public class BaseContent extends BaseTimeEntity{
     public Boolean deleted;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public BaseContent(Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted) {
+    public BaseContent(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean shared, Boolean deleted) {
         this.contentNo = contentNo;
         this.contentName = contentName;
         this.permissions = permissions;
@@ -47,7 +49,7 @@ public class BaseContent extends BaseTimeEntity{
     }
 
     public boolean isManager (Long userNo) {
-        return managerNo != null && managerNo.equals(userNo);
+        return managerNo.equals(userNo);
     }
 
     public boolean isReadable (Long userNo, Long groupNo) {

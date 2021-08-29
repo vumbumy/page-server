@@ -65,6 +65,10 @@ public class User extends BaseTimeEntity implements UserDetails {
         );
     }
 
+    public Boolean equalsNo(Long userNo) {
+        return this.userNo.equals(userNo);
+    }
+
     @Override
     public String getUsername() {
         return userName;

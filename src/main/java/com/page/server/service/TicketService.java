@@ -136,7 +136,7 @@ public class TicketService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        ticket.projectNo = request.ticketNo;
+        ticket.contentNo = request.ticketNo;
         ticket.contentName = request.ticketName;
         ticket.status = request.status;
 

@@ -31,16 +31,26 @@ public class ProjectService {
         return projectRepository.findAllShared();
     }
 
+    public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writeable) {
+        return ProjectDto.Response.builder()
+                .projectNo(projectDao.getProjectNo())
+                .projectName(projectDao.getProjectName())
+                .managerName(projectDao.getManagerName())
+                .createdAt(projectDao.getCreatedAt())
+                .ticketCount(projectDao.getTicketCount())
+                .writeable(writeable)
+                .build();
+    }
+
     public List<ProjectDto.Response> getProjectListByUser(User user) {
        List<ProjectDto.Response> dtoList = new ArrayList<>();
         if (user.isAdmin()) {
             List<ProjectDao> daoList = projectRepository.findProjectDaoAll();
 
-            daoList.forEach(projectDao -> dtoList.add(ProjectDto.Response.builder()
-                    .projectNo(projectDao.getProjectNo())
-                    .projectName(projectDao.getProjectName())
-                    .writeable(Boolean.TRUE)
-                    .build())
+            daoList.forEach(
+                    projectDao -> dtoList.add(
+                            toResponse(projectDao, Boolean.TRUE)
+                    )
             );
         } else {
             List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.getUserNo());
@@ -55,13 +65,12 @@ public class ProjectService {
             tDaoList.forEach(projectDao -> {
                 AccessRight accessRight = accessRightMap.get(projectDao.getProjectNo());
 
-                dtoList.add(ProjectDto.Response.builder()
-                        .projectNo(projectDao.getProjectNo())
-                        .projectName(projectDao.getProjectName())
-                        .writeable(
+                dtoList.add(
+                        toResponse(
+                                projectDao,
                                 accessRight != null && accessRight.equals(AccessRight.WRITE)
                         )
-                        .build());
+                );
             });
         }
 

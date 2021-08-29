@@ -3,11 +3,13 @@ package com.page.server.dto;
 import com.page.server.entity.Value;
 import com.page.server.entity.Permission;
 import com.page.server.entity.Ticket;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
 public class TicketDto {
     public Long ticketNo;
     public String ticketName;
@@ -15,15 +17,6 @@ public class TicketDto {
     public Ticket.Status status;
     public List<Permission> permissions;
     public Boolean writeable;
-
-    public TicketDto(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable) {
-        this.ticketNo = ticketNo;
-        this.ticketName = ticketName;
-        this.shared = shared;
-        this.status = status;
-        this.permissions = permissions;
-        this.writeable = writeable;
-    }
 
     public static class Response extends TicketDto{
         public List<Value> values;

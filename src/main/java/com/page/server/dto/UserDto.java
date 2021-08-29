@@ -3,6 +3,7 @@ package com.page.server.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,13 +15,15 @@ public class UserDto {
         public String userName;
         public String phoneNumber;
         public String groupName;
+        public LocalDateTime createdAt;
 
         @Builder
-        public Info(String userName, List<String> roles, String userName1, String phoneNumber, String groupName) {
+        public Info(String userName, List<String> roles, String userName1, String phoneNumber, String groupName, LocalDateTime createdAt) {
             super(userName, roles);
             this.userName = userName1;
             this.phoneNumber = phoneNumber;
             this.groupName = groupName;
+            this.createdAt = createdAt;
         }
     }
 

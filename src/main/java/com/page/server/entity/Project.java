@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @NoArgsConstructor
@@ -27,7 +28,7 @@ public class Project extends BaseContent {
     public List<Type> types;
 
     @Builder
-    public Project(Long contentNo, String contentName, List<Permission> permissions, Long managerNo, Boolean shared, Boolean deleted, String description, Long startedAt, Long endedAt, List<Type> types) {
+    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean shared, Boolean deleted, String description, Long startedAt, Long endedAt, List<Type> types) {
         super(contentNo, contentName, permissions, managerNo, shared, deleted);
         this.description = description;
         this.startedAt = startedAt;

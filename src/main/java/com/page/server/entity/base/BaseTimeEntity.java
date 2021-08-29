@@ -23,7 +23,7 @@ public class BaseTimeEntity implements Serializable {
             insertable = true,
             updatable = false
     )
-    protected LocalDateTime createdAt;
+    public LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(
@@ -31,5 +31,5 @@ public class BaseTimeEntity implements Serializable {
             insertable = true,
             updatable = true
     )
-    protected LocalDateTime updatedAt;
+    public LocalDateTime updatedAt;
 }
