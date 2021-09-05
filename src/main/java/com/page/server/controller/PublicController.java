@@ -7,6 +7,7 @@ import com.page.server.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,9 +26,9 @@ public class PublicController {
     }
 
     @GetMapping("/tickets")
-    public ResponseEntity<List<TicketDao>> getTickets() {
+    public ResponseEntity<List<TicketDao>> getTickets(@RequestParam(required = false) Long projectNo) {
         return ResponseEntity.ok(
-                ticketService.getPublicTicketList()
+                ticketService.getPublicTicketList(projectNo)
         );
     }
 }

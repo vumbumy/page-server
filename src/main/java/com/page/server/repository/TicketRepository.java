@@ -19,7 +19,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "        LEFT JOIN\n" +
             "    _content_permissions AS cp ON cp.content_no = tk.content_no\n" +
             "WHERE\n" +
-            "    ?2 IS NULL OR tk.status = ?2\n" +
+            "    (?2 IS NULL OR tk.status = ?2)\n" +
             "    AND cp.permission_no IN (?1)",
             nativeQuery = true
     )
@@ -46,11 +46,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "FROM\n" +
             "    _ticket AS tk\n" +
             "WHERE\n" +
-            "    (?2 IS NULL OR tk.status = ?2)\n" +
-            "    AND (tk.shared OR tk.content_no IN (?1))",
+            "    (?1 IS NULL OR tk.project_no = ?1)\n" +
+            "    AND (?3 IS NULL OR tk.status = ?3)\n" +
+            "    AND (tk.shared OR tk.content_no IN (?2))",
             nativeQuery = true
     )
-    List<TicketDao> findAllByTicketNoContains(Set<Long> ticketNoList, Integer status);
+    List<TicketDao> findAllByTicketNoContains(Long projectNo, Set<Long> ticketNoList, Integer status);
 
     @Query(value =
             "SELECT \n" +
@@ -61,10 +62,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "FROM\n" +
             "    _ticket AS tk\n" +
             "WHERE\n" +
-            "    tk.shared",
+            "    (?1 IS NULL OR tk.project_no = ?1)\n" +
+            "    AND tk.shared",
             nativeQuery = true
     )
-    List<TicketDao> findAllShared();
+    List<TicketDao> findAllShared(Long projectNo);
 
     @Query(value =
             "SELECT \n" +
@@ -74,8 +76,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "FROM\n" +
             "    _ticket AS tk\n" +
             "WHERE\n" +
-            "    ?1 IS NULL OR tk.status = ?1\n",
+            "    (?1 IS NULL OR tk.project_no = ?1)\n" +
+            "    AND (?2 IS NULL OR tk.status = ?2)\n",
             nativeQuery = true
     )
-    List<TicketDao> findAllTicketDaoList(Integer status);
+    List<TicketDao> findAllTicketDaoList(Long projectNo, Integer status);
 }

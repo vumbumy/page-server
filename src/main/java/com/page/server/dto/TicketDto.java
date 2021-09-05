@@ -1,6 +1,6 @@
 package com.page.server.dto;
 
-import com.page.server.entity.Value;
+import com.page.server.dao.ValueDao;
 import com.page.server.entity.Permission;
 import com.page.server.entity.Ticket;
 import lombok.AllArgsConstructor;
@@ -18,19 +18,26 @@ public class TicketDto {
     public List<Permission> permissions;
     public Boolean writeable;
 
-    public static class Response extends TicketDto{
-        public List<Value> values;
+    public static class Detail extends TicketDto{
+        public List<ValueDao> values;
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable, List<Value> values) {
+        public Detail(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable, List<ValueDao> values) {
             super(ticketNo, ticketName, shared, status, permissions, writeable);
             this.values = values;
         }
     }
 
+    public static class Response extends TicketDto{
+
+        @Builder
+        public Response(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable) {
+            super(ticketNo, ticketName, shared, status, permissions, writeable);
+        }
+    }
+
     public static class Request extends TicketDto {
         public Long projectNo;
-
         public Map<Long, String> values;
 
         @Builder

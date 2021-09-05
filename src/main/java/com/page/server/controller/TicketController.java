@@ -19,9 +19,9 @@ public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping("")
-    public ResponseEntity<List<TicketDto.Response>> getTickets(@AuthenticationPrincipal User user, @RequestParam(required = false) Ticket.Status status) {
+    public ResponseEntity<List<TicketDto.Response>> getTickets(@AuthenticationPrincipal User user, @RequestParam(required = false) Long projectNo, @RequestParam(required = false) Ticket.Status status) {
         return ResponseEntity.ok(
-                ticketService.getTicketListByUser(user, status)
+                ticketService.getTicketListByUser(user, projectNo, status)
         );
     }
 
@@ -33,7 +33,7 @@ public class TicketController {
     }
 
     @GetMapping("/{ticketNo}")
-    public ResponseEntity<TicketDto.Response> getTicket(@AuthenticationPrincipal User user, @PathVariable Long ticketNo) {
+    public ResponseEntity<TicketDto.Detail> getTicket(@AuthenticationPrincipal User user, @PathVariable Long ticketNo) {
         return ResponseEntity.ok(
                 ticketService.getTicketByUser(user, ticketNo)
         );

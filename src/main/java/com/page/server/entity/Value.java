@@ -1,6 +1,7 @@
 package com.page.server.entity;
 
 import com.page.server.entity.base.BaseTimeEntity;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -26,4 +27,12 @@ public class Value extends BaseTimeEntity implements Serializable {
     public Long contentNo;
 
     public String dataValue;
+
+    @Builder
+    public Value(Long valueNo, @NotNull Type type, @NotNull Long contentNo, String dataValue) {
+        this.valueNo = valueNo;
+        this.type = type;
+        this.contentNo = contentNo;
+        this.dataValue = dataValue;
+    }
 }

@@ -3,15 +3,17 @@ package com.page.server.service;
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
 import com.page.server.dao.TicketDao;
+import com.page.server.dao.ValueDao;
 import com.page.server.dto.TicketDto;
-import com.page.server.entity.Permission;
-import com.page.server.entity.Ticket;
-import com.page.server.entity.User;
+import com.page.server.entity.*;
 import com.page.server.repository.TicketRepository;
+import com.page.server.repository.TypeRepository;
+import com.page.server.repository.ValueRepository;
 import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +27,19 @@ public class TicketService {
 
     private final PermissionService permissionService;
 
-    public List<TicketDao> getPublicTicketList() {
-        return ticketRepository.findAllShared();
+    private final TypeRepository typeRepository;
+    private final ValueRepository valueRepository;
+
+    public List<TicketDao> getPublicTicketList(Long projectNo) {
+        return ticketRepository.findAllShared(projectNo);
     }
 
-    public List<TicketDto.Response> getTicketListByUser(User user, Ticket.Status status) {
+    public List<TicketDto.Response> getTicketListByUser(User user, Long projectNo, Ticket.Status status) {
         Integer statusNum = status != null ? status.ordinal() : null;
 
         List<TicketDto.Response> dtoList = new ArrayList<>();
         if (user.isAdmin()) {
-            List<TicketDao> daoList = ticketRepository.findAllTicketDaoList(statusNum);
+            List<TicketDao> daoList = ticketRepository.findAllTicketDaoList(projectNo, statusNum);
 
             daoList.forEach(ticketDao -> dtoList.add(TicketDto.Response.builder()
                     .ticketNo(ticketDao.getTicketNo())
@@ -51,6 +56,7 @@ public class TicketService {
                     .collect(Collectors.toMap(PermissionDao::getContentNo, PermissionDao::getAccessRight));
 
             List<TicketDao> tDaoList = ticketRepository.findAllByTicketNoContains(
+                    projectNo,
                     accessRightMap.keySet(),
                     statusNum
             );
@@ -74,7 +80,7 @@ public class TicketService {
     }
 
 
-    public TicketDto.Response getTicketByUser(User user, Long ticketNo) {
+    public TicketDto.Detail getTicketByUser(User user, Long ticketNo) {
         Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
         if (ticket == null) {
             return null;
@@ -84,28 +90,48 @@ public class TicketService {
             return null;
         }
 
-        return ticketConvert.to(ticket);
+        return ticketConvert.toDetail(
+                ticket,
+                valueRepository.findAllByContentNo(ticketNo)
+        );
     }
 
+    @Transactional
     public TicketDto.Response createTicket(User user, TicketDto.Request request) {
 
         List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
 
-        Ticket ticket = Ticket.builder()
-                .managerNo(user.getUserNo())
-                .contentName(request.ticketName)
-                .projectNo(request.projectNo)
-                .status(request.status)
-//                .content(request.content)
-                .permissions(permissions)
-                .shared(request.shared)
-                .build();
-
-        return ticketConvert.to(
-                ticketRepository.save(ticket)
+        Ticket ticket = ticketRepository.save(
+                Ticket.builder()
+                        .managerNo(user.getUserNo())
+                        .contentName(request.ticketName)
+                        .projectNo(request.projectNo)
+                        .status(request.status)
+                        .permissions(permissions)
+                        .shared(request.shared)
+                        .build()
         );
+
+        List<Value> valueList = new ArrayList<>();
+        request.values.forEach((typeNo, value) -> {
+            Type type = typeRepository.findById(typeNo).orElseThrow(
+                    () -> new RuntimeException("Not Fount Type: " + typeNo)
+            );
+
+            valueList.add(Value.builder()
+                    .contentNo(ticket.contentNo)
+                    .type(type)
+                    .dataValue(value)
+                    .build()
+            );
+        });
+
+        valueRepository.saveAll(valueList);
+
+        return ticketConvert.toResponse(ticket);
     };
 
+    @Transactional
     public void updateTicket(User user, TicketDto.Request request) {
         Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
         if (ticket == null) {
