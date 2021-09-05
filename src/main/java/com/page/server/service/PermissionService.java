@@ -19,7 +19,12 @@ public class PermissionService {
     private final PermissionRepository permissionRepository;
 
     public List<PermissionDao> getPermissionDaoListByUserNo(Long userNo) {
-        return permissionRepository.findPermissionDaoByUserNo(userNo);
+        return permissionRepository.findPermissionDaoListByUserNo(userNo);
+    }
+
+    public PermissionDao getPermissionDaoByUserNo(Long contentNo, Long userNo) {
+        return permissionRepository.findPermissionDaoByUserNo(contentNo, userNo)
+                .orElse(null);
     }
 
     public Permission getDefaultPermission(User user) {

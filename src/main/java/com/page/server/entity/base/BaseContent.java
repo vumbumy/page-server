@@ -57,7 +57,7 @@ public class BaseContent extends BaseTimeEntity {
                 .anyMatch(permission -> permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo));
     }
 
-    public boolean isWriteable(Long userNo, Long groupNo) {
+    public boolean iswritable(Long userNo, Long groupNo) {
         return this.isManager(userNo) || this.permissions.stream()
                 .anyMatch(permission -> (permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo)) && permission.accessRight.equals(AccessRight.WRITE));
     }

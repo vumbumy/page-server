@@ -31,4 +31,12 @@ public class PublicController {
                 ticketService.getPublicTicketList(projectNo)
         );
     }
+
+//    TODO: issue #1
+//    @GetMapping("/tickets/{ticketNo}")
+//    public ResponseEntity<List<TicketDao>> getTicket(@PathVariable Long ticketNo) {
+//        return ResponseEntity.ok(
+//                ticketService.getPublicTicketList(projectNo)
+//        );
+//    }
 }

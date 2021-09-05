@@ -31,14 +31,14 @@ public class ProjectService {
         return projectRepository.findAllShared();
     }
 
-    public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writeable) {
+    public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writable) {
         return ProjectDto.Response.builder()
                 .projectNo(projectDao.getProjectNo())
                 .projectName(projectDao.getProjectName())
                 .managerName(projectDao.getManagerName())
                 .createdAt(projectDao.getCreatedAt())
                 .ticketCount(projectDao.getTicketCount())
-                .writeable(writeable)
+                .writable(writable)
                 .build();
     }
 
@@ -115,7 +115,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.isWriteable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.iswritable(user.getUserNo(), user.getGroupNo())) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -133,7 +133,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.isWriteable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.iswritable(user.getUserNo(), user.getGroupNo())) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -148,7 +148,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.isWriteable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.iswritable(user.getUserNo(), user.getGroupNo())) {
             throw new RuntimeException("Not found project.");
         }
 

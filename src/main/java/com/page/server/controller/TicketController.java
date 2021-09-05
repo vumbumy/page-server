@@ -40,8 +40,8 @@ public class TicketController {
     }
 
     @PutMapping("/status")
-    public ResponseEntity<Object> updateTicketStatus(@AuthenticationPrincipal User user, @RequestBody TicketDto.Request request) {
-        ticketService.updateTicketStatus(user, request);
+    public ResponseEntity<Object> updateTicketStatus(@AuthenticationPrincipal User user, @RequestBody TicketDto ticketDto) {
+        ticketService.updateTicketStatus(user, ticketDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

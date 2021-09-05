@@ -17,5 +17,9 @@ public interface TicketConvert {
 
     @Mapping(source = "ticket.contentNo", target = "ticketNo")
     @Mapping(source = "ticket.contentName", target = "ticketName")
-    TicketDto.Detail toDetail(Ticket ticket, List<ValueDao> values);
+    TicketDto.Detail toDetail(Ticket ticket, Boolean writable, List<ValueDao> values);
+
+    @Mapping(source = "ticketNo", target = "contentNo")
+    @Mapping(source = "ticketName", target = "contentName")
+    Ticket fromRequest(TicketDto.Request request);
 }

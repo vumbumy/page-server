@@ -23,7 +23,21 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
             "    pm.user_no = ?1",
             nativeQuery = true
     )
-    List<PermissionDao> findPermissionDaoByUserNo(Long userNo);
+    List<PermissionDao> findPermissionDaoListByUserNo(Long userNo);
+
+    @Query(value =
+            "SELECT \n" +
+                    "    cp.content_no AS contentNo, pm.access_right AS accessRight\n" +
+                    "FROM\n" +
+                    "    _content_permissions AS cp\n" +
+                    "        LEFT JOIN\n" +
+                    "    _permission AS pm ON cp.permission_no = pm.permission_no\n" +
+                    "WHERE\n" +
+                    "    cp.content_no = ?2\n" +
+                    "    AND pm.user_no = ?1",
+            nativeQuery = true
+    )
+    Optional<PermissionDao> findPermissionDaoByUserNo(Long userNo, Long contentNo);
 
     Optional<Permission> findPermissionByUserNoAndAccessRight(Long userNo, AccessRight accessRight);
 }

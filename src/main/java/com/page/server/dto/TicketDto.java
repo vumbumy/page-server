@@ -15,36 +15,40 @@ public class TicketDto {
     public String ticketName;
     public Boolean shared;
     public Ticket.Status status;
-    public List<Permission> permissions;
-    public Boolean writeable;
 
     public static class Detail extends TicketDto{
         public List<ValueDao> values;
+        public List<Permission> permissions;
+        public Boolean writable;
 
         @Builder
-        public Detail(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable, List<ValueDao> values) {
-            super(ticketNo, ticketName, shared, status, permissions, writeable);
+        public Detail(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<ValueDao> values, List<Permission> permissions, Boolean writable) {
+            super(ticketNo, ticketName, shared, status);
             this.values = values;
+            this.permissions = permissions;
+            this.writable = writable;
         }
     }
 
     public static class Response extends TicketDto{
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable) {
-            super(ticketNo, ticketName, shared, status, permissions, writeable);
+        public Response(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status) {
+            super(ticketNo, ticketName, shared, status);
         }
     }
 
     public static class Request extends TicketDto {
         public Long projectNo;
         public Map<Long, String> values;
+        public List<Permission> permissions;
 
         @Builder
-        public Request(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<Permission> permissions, Boolean writeable, Long projectNo, Map<Long, String> values) {
-            super(ticketNo, ticketName, shared, status, permissions, writeable);
+        public Request(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
+            super(ticketNo, ticketName, shared, status);
             this.projectNo = projectNo;
             this.values = values;
+            this.permissions = permissions;
         }
     }
 }
