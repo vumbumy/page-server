@@ -28,14 +28,11 @@ public class Value extends BaseTimeEntity implements Serializable {
 
     public String dataValue;
 
-    public Boolean shared;
-
     @Builder
-    public Value(Long valueNo, @NotNull Type type, @NotNull Long contentNo, String dataValue, Boolean shared) {
+    public Value(Long valueNo, @NotNull Type type, @NotNull Long contentNo, String dataValue) {
         this.valueNo = valueNo;
         this.type = type;
         this.contentNo = contentNo;
         this.dataValue = dataValue;
-        this.shared = shared;
     }
 }

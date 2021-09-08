@@ -13,7 +13,7 @@ import java.util.Map;
 public class TicketDto {
     public Long ticketNo;
     public String ticketName;
-    public Boolean shared;
+    public Boolean readable;
     public Ticket.Status status;
 
     public static class Detail extends TicketDto{
@@ -22,8 +22,8 @@ public class TicketDto {
         public Boolean writable;
 
         @Builder
-        public Detail(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, List<ValueDao> values, List<Permission> permissions, Boolean writable) {
-            super(ticketNo, ticketName, shared, status);
+        public Detail(Long ticketNo, String ticketName, Boolean readable, Ticket.Status status, List<ValueDao> values, List<Permission> permissions, Boolean writable) {
+            super(ticketNo, ticketName, readable, status);
             this.values = values;
             this.permissions = permissions;
             this.writable = writable;
@@ -33,8 +33,8 @@ public class TicketDto {
     public static class Response extends TicketDto{
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status) {
-            super(ticketNo, ticketName, shared, status);
+        public Response(Long ticketNo, String ticketName, Boolean readable, Ticket.Status status) {
+            super(ticketNo, ticketName, readable, status);
         }
     }
 
@@ -44,8 +44,8 @@ public class TicketDto {
         public List<Permission> permissions;
 
         @Builder
-        public Request(Long ticketNo, String ticketName, Boolean shared, Ticket.Status status, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
-            super(ticketNo, ticketName, shared, status);
+        public Request(Long ticketNo, String ticketName, Boolean readable, Ticket.Status status, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
+            super(ticketNo, ticketName, readable, status);
             this.projectNo = projectNo;
             this.values = values;
             this.permissions = permissions;

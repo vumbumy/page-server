@@ -13,6 +13,7 @@ import com.page.server.support.ProjectConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class ProjectService {
     private final TypeService typeService;
 
     public List<ProjectDao> getPublicProjectList() {
-        return projectRepository.findAllShared();
+        return projectRepository.findAllReadable();
     }
 
     public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writable) {
@@ -91,6 +92,7 @@ public class ProjectService {
         return projectConvert.to(project);
     }
 
+    @Transactional
     public ProjectDto.Detail createProject(User user, ProjectDto.Request request) {
 
         List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
@@ -101,7 +103,7 @@ public class ProjectService {
                 .contentName(request.projectName)
                 .permissions(permissions)
                 .types(types)
-                .shared(request.shared)
+                .readable(request.readable)
                 .build();
 
         return projectConvert.to(
@@ -122,7 +124,7 @@ public class ProjectService {
         project.contentName = request.projectName;
         project.permissions = permissionService
                 .addListIfNotExist(request.permissions);
-        project.shared = request.shared;
+        project.readable = request.readable;
 
         projectRepository.save(project);
     };

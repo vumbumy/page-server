@@ -33,7 +33,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 //                    "        LEFT JOIN\n" +
 //                    "    _content_permissions AS cp ON cp.content_no = tk.content_no\n" +
 //                    "WHERE\n" +
-//                    "    tk.shared OR cp.permission_no IN (?1)",
+//                    "    tk.readable OR cp.permission_no IN (?1)",
 //            nativeQuery = true
 //    )
 //    List<TicketDao> findAllByPermissions(List<Long> permissionNoList);
@@ -48,7 +48,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "WHERE\n" +
             "    (?1 IS NULL OR tk.project_no = ?1)\n" +
             "    AND (?3 IS NULL OR tk.status = ?3)\n" +
-            "    AND (tk.shared OR tk.content_no IN (?2))",
+            "    AND (tk.readable OR tk.content_no IN (?2))",
             nativeQuery = true
     )
     List<TicketDao> findAllByTicketNoContains(Long projectNo, Set<Long> ticketNoList, Integer status);
@@ -63,10 +63,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "    _ticket AS tk\n" +
             "WHERE\n" +
             "    (?1 IS NULL OR tk.project_no = ?1)\n" +
-            "    AND tk.shared",
+            "    AND tk.readable",
             nativeQuery = true
     )
-    List<TicketDao> findAllShared(Long projectNo);
+    List<TicketDao> findAllReadable(Long projectNo);
 
     @Query(value =
             "SELECT \n" +

@@ -11,5 +11,5 @@ public interface TicketDao {
 
     Ticket.Status getStatus();
 
-    Boolean getShared();
+    Boolean getReadable();
 }

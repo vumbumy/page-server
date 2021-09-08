@@ -29,9 +29,6 @@ public class Type implements Serializable {
 
     public String defaultValue;
 
-    @NotNull
     public Boolean required = false;
-
-    @NotNull
-    public Boolean deleted;
+    public Boolean deleted = false;
 }

@@ -34,17 +34,18 @@ public class BaseContent extends BaseTimeEntity {
     @NotNull
     public Long managerNo;
 
-    public Boolean shared;
-
-    public Boolean deleted;
+    public Boolean readable = false;
+    public Boolean writeable = false;
+    public Boolean deleted = false;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public BaseContent(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean shared, Boolean deleted) {
+    public BaseContent(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean readable, Boolean writeable, Boolean deleted) {
         this.contentNo = contentNo;
         this.contentName = contentName;
         this.permissions = permissions;
         this.managerNo = managerNo;
-        this.shared = shared;
+        this.readable = readable;
+        this.writeable = writeable;
         this.deleted = deleted;
     }
 
@@ -53,12 +54,12 @@ public class BaseContent extends BaseTimeEntity {
     }
 
     public boolean isReadable (Long userNo, Long groupNo) {
-        return this.shared || this.isManager(userNo) || this.permissions.stream()
+        return this.readable || this.isManager(userNo) || this.permissions.stream()
                 .anyMatch(permission -> permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo));
     }
 
     public boolean iswritable(Long userNo, Long groupNo) {
-        return this.isManager(userNo) || this.permissions.stream()
+        return this.writeable || this.isManager(userNo) || this.permissions.stream()
                 .anyMatch(permission -> (permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo)) && permission.accessRight.equals(AccessRight.WRITE));
     }
 }

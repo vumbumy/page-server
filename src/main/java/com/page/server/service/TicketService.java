@@ -30,7 +30,7 @@ public class TicketService {
     private final ValueRepository valueRepository;
 
     public List<TicketDao> getPublicTicketList(Long projectNo) {
-        return ticketRepository.findAllShared(projectNo);
+        return ticketRepository.findAllReadable(projectNo);
     }
 
     public List<TicketDto.Response> getTicketListByUser(User user, Long projectNo, Ticket.Status status) {
@@ -110,7 +110,7 @@ public class TicketService {
                         .projectNo(request.projectNo)
                         .status(request.status)
                         .permissions(permissions)
-                        .shared(request.shared)
+                        .readable(request.readable)
                         .build()
         );
 
@@ -149,7 +149,7 @@ public class TicketService {
 //        ticket.content = request.content;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
-        ticket.shared = request.shared;
+        ticket.readable = request.readable;
 
         ticketRepository.save(ticket);
     };
@@ -165,7 +165,7 @@ public class TicketService {
         }
 
         ticket.status = request.status;
-        ticket.shared = request.shared;
+        ticket.readable = request.readable;
 
         ticketRepository.save(ticket);
     };
