@@ -47,7 +47,7 @@ public class TicketService {
                     .build())
             );
         } else {
-            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.getUserNo());
+            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
 
             Map<Long, AccessRight> accessRightMap = pDaoList.stream()
                     .collect(Collectors.toMap(PermissionDao::getContentNo, PermissionDao::getAccessRight));
@@ -59,7 +59,7 @@ public class TicketService {
             );
 
             tDaoList.forEach(ticketDao -> {
-                AccessRight accessRight = accessRightMap.get(ticketDao.getTicketNo());
+//                AccessRight accessRight = accessRightMap.get(ticketDao.getTicketNo());
 
                 dtoList.add(TicketDto.Response.builder()
                         .ticketNo(ticketDao.getTicketNo())
@@ -84,17 +84,21 @@ public class TicketService {
 
         boolean writable = user.isAdmin();
         if(!writable) {
-            if(!ticket.isReadable(user.getUserNo(), user.getGroupNo())) {
+            if(!ticket.isReadable(user.userNo, user.groupNo)) {
                 return null;
             }
 
-            PermissionDao permissionDao = permissionService.getPermissionDaoByUserNo(user.getUserNo(), ticketNo);
+            writable = ticket.iswritable(user.userNo, user.groupNo);
 
-            writable = permissionDao != null && permissionDao.getAccessRight().equals(AccessRight.WRITE);
+//            PermissionDao permissionDao = permissionService.getPermissionDaoByUserNo(user.userNo, ticketNo);
+
+//            writable = permissionDao != null && permissionDao.getAccessRight().equals(AccessRight.WRITE);
         }
 
         return ticketConvert.toDetail(
-                ticket, writable, valueRepository.findAllByContentNo(ticketNo)
+                ticket,
+                writable,
+                valueRepository.findAllByContentNo(ticketNo)
         );
     }
 
@@ -105,7 +109,7 @@ public class TicketService {
 
         Ticket ticket = ticketRepository.save(
                 Ticket.builder()
-                        .managerNo(user.getUserNo())
+                        .managerNo(user.userNo)
                         .contentName(request.ticketName)
                         .projectNo(request.projectNo)
                         .status(request.status)
@@ -140,7 +144,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.iswritable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !ticket.iswritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -160,7 +164,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.iswritable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !ticket.iswritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -176,7 +180,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.iswritable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !ticket.iswritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("Not found ticket.");
         }
 

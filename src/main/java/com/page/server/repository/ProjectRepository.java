@@ -14,7 +14,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             value = "SELECT DISTINCT\n" +
                     "    prj.content_no AS projectNo,\n" +
                     "    prj.content_name AS projectName,\n" +
-                    "    usr.user_name AS managerName,\n" +
+                    "    usr.email AS managerName,\n" +
 //                    "    COUNT(tk.content_no) AS ticketCount,\n" +
                     "    prj.created_at AS createdAt\n" +
                     "FROM\n" +
@@ -29,7 +29,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             value = "SELECT \n" +
                     "    prj.content_no AS projectNo,\n" +
                     "    prj.content_name AS projectName,\n" +
-                    "    usr.user_name AS managerName,\n" +
+                    "    usr.email AS managerName,\n" +
                     "    COUNT(tk.content_no) AS ticketCount,\n" +
                     "    prj.created_at AS createdAt\n" +
                     "FROM\n" +

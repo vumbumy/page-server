@@ -54,7 +54,7 @@ public class ProjectService {
                     )
             );
         } else {
-            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.getUserNo());
+            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
 
             Map<Long, AccessRight> accessRightMap = pDaoList.stream()
                     .collect(Collectors.toMap(PermissionDao::getContentNo, PermissionDao::getAccessRight));
@@ -85,7 +85,7 @@ public class ProjectService {
             return null;
         }
 
-        if(!user.isAdmin() && !project.isReadable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.isReadable(user.userNo, user.groupNo)) {
             return null;
         }
 
@@ -99,7 +99,7 @@ public class ProjectService {
         List<Type> types = typeService.addListIfNotExist(request.types);
 
         Project project = Project.builder()
-                .managerNo(user.getUserNo())
+                .managerNo(user.userNo)
                 .contentName(request.projectName)
                 .permissions(permissions)
                 .types(types)
@@ -117,7 +117,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.iswritable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.iswritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -135,7 +135,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.iswritable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.iswritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -150,7 +150,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.iswritable(user.getUserNo(), user.getGroupNo())) {
+        if(!user.isAdmin() && !project.iswritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("Not found project.");
         }
 

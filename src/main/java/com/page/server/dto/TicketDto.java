@@ -13,28 +13,28 @@ import java.util.Map;
 public class TicketDto {
     public Long ticketNo;
     public String ticketName;
-    public Boolean readable;
     public Ticket.Status status;
+
+    public Boolean readable;
+    public Boolean writable;
 
     public static class Detail extends TicketDto{
         public List<ValueDao> values;
         public List<Permission> permissions;
-        public Boolean writable;
 
         @Builder
-        public Detail(Long ticketNo, String ticketName, Boolean readable, Ticket.Status status, List<ValueDao> values, List<Permission> permissions, Boolean writable) {
-            super(ticketNo, ticketName, readable, status);
+        public Detail(Long ticketNo, String ticketName, Ticket.Status status, Boolean readable, Boolean writable, List<ValueDao> values, List<Permission> permissions) {
+            super(ticketNo, ticketName, status, readable, writable);
             this.values = values;
             this.permissions = permissions;
-            this.writable = writable;
         }
     }
 
     public static class Response extends TicketDto{
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Boolean readable, Ticket.Status status) {
-            super(ticketNo, ticketName, readable, status);
+        public Response(Long ticketNo, String ticketName, Ticket.Status status, Boolean readable, Boolean writable) {
+            super(ticketNo, ticketName, status, readable, writable);
         }
     }
 
@@ -44,8 +44,8 @@ public class TicketDto {
         public List<Permission> permissions;
 
         @Builder
-        public Request(Long ticketNo, String ticketName, Boolean readable, Ticket.Status status, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
-            super(ticketNo, ticketName, readable, status);
+        public Request(Long ticketNo, String ticketName, Ticket.Status status, Boolean readable, Boolean writable, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
+            super(ticketNo, ticketName, status, readable, writable);
             this.projectNo = projectNo;
             this.values = values;
             this.permissions = permissions;

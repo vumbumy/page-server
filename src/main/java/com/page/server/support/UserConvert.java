@@ -12,7 +12,6 @@ public interface UserConvert {
 
     User from(SignDto.InRequest request);
 
-    @Mapping(source = "username", target = "userName")
     UserDto.Info to(User user);
 
     default String roleToString(Role role) {

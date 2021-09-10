@@ -2,10 +2,8 @@ package com.page.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.page.server.entity.base.BaseTimeEntity;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,22 +17,22 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "_USER")
-@Data
 @NoArgsConstructor
 public class User extends BaseTimeEntity implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userNo;
+    public Long userNo;
 
-    private String userName;
+    public String email;
 
     @Column(length = 15)
-    private String phoneNumber; // E.164 Format
+    public String phoneNumber; // E.164 Format
 
+    @Getter
     @JsonIgnore
-    private String password;
+    public String password;
 
     // TODO : ROLE 사용시
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -42,17 +40,13 @@ public class User extends BaseTimeEntity implements UserDetails {
 			name = "_USER_ROLES",
 			joinColumns = @JoinColumn(name = "USER_NO"),
 			inverseJoinColumns = @JoinColumn(name = "ROLE_NO"))
-    private List<Role> roles;
+    public List<Role> roles;
 
     @Column
-    private Long groupNo;
+    public Long groupNo;
 
     @Column
-    private Boolean isActivated;
-
-    // return this.roles.stream()
-    //  .map(SimpleGrantedAuthority::new)
-    //  .collect(Collectors.toList());
+    public Boolean activated;
 
     @JsonIgnore
     @Override
@@ -71,7 +65,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return email;
     }
 
     @Override

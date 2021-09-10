@@ -36,13 +36,13 @@ public class AuthController {
         String regex = "^(.+)@(.+)$";
 
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(request.userName);
+        Matcher matcher = pattern.matcher(request.email);
 
         if (!matcher.matches()) {
             throw new IllegalArgumentException("This email is not available.");
         }
 
-        Boolean isActivated = userSevice.getUserIsActivated(request.userName);
+        Boolean isActivated = userSevice.getUserIsActivated(request.email);
         if (isActivated == null) {
             userSevice.createUser(request);
         }
@@ -52,15 +52,15 @@ public class AuthController {
         }
 
         return mailService.sendMessage(
-                request.userName,
+                request.email,
                 "Sign in notification from VUMY",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         );
     }
 
     @PostMapping("/sign/in")
-    public ResponseEntity<SignDto.InResponse> getToken(@RequestBody SignDto.InRequest request) throws AuthenticationException {
-        User user = userSevice.getUserByUserName(request.userName);
+    public ResponseEntity<String> getToken(@RequestBody SignDto.InRequest request) throws AuthenticationException {
+        User user = userSevice.getUserByUserName(request.email);
         if (user == null){
             throw new IllegalArgumentException("Can't find account.");
         }
@@ -74,10 +74,7 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(
-                SignDto.InResponse.builder()
-//                        .user(userSevice.convertUser(user))
-                        .token(jwtTokenProvider.createToken(user.getUsername(), Collections.emptyList()))
-                        .build()
+                jwtTokenProvider.createToken(user.getUsername(), Collections.emptyList())
         );
     }
 

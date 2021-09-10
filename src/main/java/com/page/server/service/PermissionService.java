@@ -30,7 +30,7 @@ public class PermissionService {
     public Permission getDefaultPermission(User user) {
         return this.createIfNotExist(
                 Permission.builder()
-                        .userNo(user.getUserNo())
+                        .userNo(user.userNo)
                         .accessRight(AccessRight.WRITE)
                         .build()
         );

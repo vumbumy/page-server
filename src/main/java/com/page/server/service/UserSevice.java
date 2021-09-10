@@ -27,35 +27,30 @@ public class UserSevice {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserDto.Info createUser(SignDto.InRequest request) throws IllegalArgumentException{
+    public User createUser(SignDto.InRequest request) throws IllegalArgumentException{
         User user = userConvert.from(request);
 
-        user.setPassword(passwordEncoder.encode(request.password));
-        user.setIsActivated(false);
+        user.password = passwordEncoder.encode(request.password);
+        user.activated = false;
 
-        return userConvert.to(
-                userRepository.save(user)
-        );
+        return userRepository.save(user);
     }
 
     public Boolean getUserIsActivated(String userName) {
-        return userRepository.findUserNameIsActivated(userName);
+        return userRepository.findEmailIsActivated(userName);
     }
 
-    public UserDto.Info updateUser(UserDto.UpdateRequest updated) throws IllegalArgumentException{
+    public User updateUser(UserDto.Request updated) throws IllegalArgumentException{
         User oldUser = userRepository.findById(updated.userNo)
                 .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
 
-        if (updated.userName != null) {
-            oldUser.setUserName(updated.userName);
-        }
-
         if (updated.password != null) {
-            oldUser.setPassword(passwordEncoder.encode(updated.password));
+            oldUser.password = passwordEncoder.encode(updated.password);
         }
 
-        oldUser.setPhoneNumber(updated.phoneNumber);
-        oldUser.setGroupNo(updated.groupNo);
+        oldUser.email = updated.email;
+        oldUser.phoneNumber = updated.phoneNumber;
+        oldUser.groupNo = updated.groupNo;
 
         List<Role> roleList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(updated.roles)) {
@@ -63,30 +58,37 @@ public class UserSevice {
                 roleRepository.findByValue(roleStr).ifPresent(roleList::add);
             }
         }
-        oldUser.setRoles(roleList);
+        oldUser.roles = roleList;
 
-        return userConvert.to(
-                userRepository.save(oldUser)
-        );
+        return userRepository.save(oldUser);
+    }
+
+    public User getUser(Long userNo) throws IllegalArgumentException{
+        return userRepository.findById(userNo)
+                .orElseThrow(() -> new IllegalArgumentException("Can't Find Account."));
     }
 
     public User getUserByUserName(String userName) throws IllegalArgumentException {
-        return userRepository.findByUserName(userName)
+        return userRepository.findByEmail(userName)
                 .orElseThrow(() -> new IllegalArgumentException("Can't find account."));
     }
 
-    public List<User> getAllUserList() {
-        return userRepository.findAll();
+    public List<User> getAllUserList(User user) {
+        if (user.isAdmin()) {
+            return userRepository.findAll();
+        }
+
+        return userRepository.findAllByGroupNo(user.groupNo);
     }
 
     public UserDto.Info convertUser(User user) {
-        UserDto.Info userResponse = userConvert.to(user);
+        UserDto.Info userInfo = userConvert.to(user);
 
-        if (user.getGroupNo() != null) {
-            userGroupRepository.findById(user.getGroupNo())
-                    .ifPresent(userGroup -> userResponse.groupName = userGroup.groupName);
+        if (user.groupNo != null) {
+            userGroupRepository.findById(user.groupNo)
+                    .ifPresent(userGroup -> userInfo.groupName = userGroup.groupName);
         }
 
-        return userResponse;
+        return userInfo;
     }
 }
