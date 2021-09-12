@@ -11,6 +11,7 @@ import com.page.server.repository.ValueRepository;
 import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -185,6 +186,21 @@ public class TicketService {
         }
 
         ticket.deleted = true;
+
+        ticketRepository.save(ticket);
+    }
+
+    public void updatePermissions(User user, Long ticketNo, List<Permission> permissions) {
+        Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
+        if (ticket == null) {
+            throw new IllegalArgumentException("Not found ticket.");
+        }
+
+        if(!user.isAdmin() && !ticket.iswritable(user.userNo, user.groupNo)) {
+            throw new RuntimeException("You don't have permission.");
+        }
+
+        ticket.permissions = permissionService.addListIfNotExist(permissions);
 
         ticketRepository.save(ticket);
     }

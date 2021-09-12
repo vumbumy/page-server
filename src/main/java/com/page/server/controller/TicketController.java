@@ -1,8 +1,10 @@
 package com.page.server.controller;
 
 import com.page.server.dto.TicketDto;
+import com.page.server.entity.Permission;
 import com.page.server.entity.Ticket;
 import com.page.server.entity.User;
+import com.page.server.service.PermissionService;
 import com.page.server.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,6 +58,13 @@ public class TicketController {
     @DeleteMapping("/{ticketNo}")
     public ResponseEntity<Object> deleteTicket(@AuthenticationPrincipal User user, @PathVariable Long ticketNo) {
         ticketService.deleteTicket(user, ticketNo);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{ticketNo}/permissions")
+    public ResponseEntity<Object> updatePermissions(@AuthenticationPrincipal User user, @PathVariable Long ticketNo, @RequestBody List<Permission> permissions){
+        ticketService.updatePermissions(user, ticketNo, permissions);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
