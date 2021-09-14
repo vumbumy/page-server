@@ -1,6 +1,7 @@
 package com.page.server.controller;
 
 import com.page.server.dto.ProjectDto;
+import com.page.server.entity.Permission;
 import com.page.server.entity.User;
 import com.page.server.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +33,10 @@ public class ProjectController {
         );
     }
 
-    @GetMapping("/{ProjectNo}")
-    public ResponseEntity<ProjectDto.Detail> getProject(@AuthenticationPrincipal User user, @PathVariable Long ProjectNo) {
+    @GetMapping("/{projectNo}")
+    public ResponseEntity<ProjectDto.Detail> getProject(@AuthenticationPrincipal User user, @PathVariable Long projectNo) {
         return ResponseEntity.ok(
-                projectService.getProjectByUser(user, ProjectNo)
+                projectService.getProjectByUser(user, projectNo)
         );
     }
 
@@ -53,9 +54,16 @@ public class ProjectController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{ProjectNo}")
-    public ResponseEntity<Object> deleteProject(@AuthenticationPrincipal User user, @PathVariable Long ProjectNo) {
-        projectService.deleteProject(user, ProjectNo);
+    @DeleteMapping("/{projectNo}")
+    public ResponseEntity<Object> deleteProject(@AuthenticationPrincipal User user, @PathVariable Long projectNo) {
+        projectService.deleteProject(user, projectNo);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{projectNo}/permissions")
+    public ResponseEntity<Object> updateProjectPermissions(@AuthenticationPrincipal User user, @PathVariable Long projectNo, @RequestBody List<Permission> permissions){
+        projectService.updatePermissions(user, projectNo, permissions);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

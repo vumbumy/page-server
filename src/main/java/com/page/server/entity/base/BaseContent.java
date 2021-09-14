@@ -34,8 +34,6 @@ public class BaseContent extends BaseTimeEntity {
     @NotNull
     public Long managerNo;
 
-//    public Boolean readable = false;
-//    public Boolean writeable = false;
     public Boolean deleted = false;
 
     @Builder(access = AccessLevel.PRIVATE)

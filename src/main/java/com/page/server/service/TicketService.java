@@ -196,7 +196,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.iswritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !ticket.isWritable(user.userNo, user.groupNo)) {
             throw new RuntimeException("You don't have permission.");
         }
 

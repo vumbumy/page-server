@@ -4,10 +4,7 @@ import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
 import com.page.server.dao.ProjectDao;
 import com.page.server.dto.ProjectDto;
-import com.page.server.entity.Permission;
-import com.page.server.entity.Project;
-import com.page.server.entity.Type;
-import com.page.server.entity.User;
+import com.page.server.entity.*;
 import com.page.server.repository.ProjectRepository;
 import com.page.server.support.ProjectConvert;
 import lombok.RequiredArgsConstructor;
@@ -155,6 +152,21 @@ public class ProjectService {
         }
 
         project.deleted = true;
+
+        projectRepository.save(project);
+    }
+
+    public void updatePermissions(User user, Long projectNo, List<Permission> permissions) {
+        Project project = projectRepository.findById(projectNo).orElse(null);
+        if (project == null) {
+            throw new IllegalArgumentException("Not found project.");
+        }
+
+        if(!user.isAdmin() && !project.isWritable(user.userNo, user.groupNo)) {
+            throw new RuntimeException("You don't have permission.");
+        }
+
+        project.permissions = permissionService.addListIfNotExist(permissions);
 
         projectRepository.save(project);
     }

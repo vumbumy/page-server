@@ -63,7 +63,7 @@ public class TicketController {
     }
 
     @PutMapping("/{ticketNo}/permissions")
-    public ResponseEntity<Object> updatePermissions(@AuthenticationPrincipal User user, @PathVariable Long ticketNo, @RequestBody List<Permission> permissions){
+    public ResponseEntity<Object> updateTicketPermissions(@AuthenticationPrincipal User user, @PathVariable Long ticketNo, @RequestBody List<Permission> permissions){
         ticketService.updatePermissions(user, ticketNo, permissions);
 
         return new ResponseEntity<>(HttpStatus.OK);
