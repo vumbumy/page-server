@@ -28,8 +28,8 @@ public class Project extends BaseContent {
     public List<Type> types;
 
     @Builder
-    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean readable, Boolean writeable, Boolean deleted, String description, Long startedAt, Long endedAt, List<Type> types) {
-        super(contentNo, contentName, permissions, managerNo, readable, writeable, deleted);
+    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean deleted, String description, Long startedAt, Long endedAt, List<Type> types) {
+        super(contentNo, contentName, permissions, managerNo, deleted);
         this.description = description;
         this.startedAt = startedAt;
         this.endedAt = endedAt;

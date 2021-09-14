@@ -15,26 +15,26 @@ public class TicketDto {
     public String ticketName;
     public Ticket.Status status;
 
-    public Boolean readable;
-    public Boolean writable;
-
     public static class Detail extends TicketDto{
         public List<ValueDao> values;
         public List<Permission> permissions;
 
+        public Boolean writable;
+
         @Builder
-        public Detail(Long ticketNo, String ticketName, Ticket.Status status, Boolean readable, Boolean writable, List<ValueDao> values, List<Permission> permissions) {
-            super(ticketNo, ticketName, status, readable, writable);
+        public Detail(Long ticketNo, String ticketName, Ticket.Status status, List<ValueDao> values, List<Permission> permissions, Boolean writable) {
+            super(ticketNo, ticketName, status);
             this.values = values;
             this.permissions = permissions;
+            this.writable = writable;
         }
     }
 
     public static class Response extends TicketDto{
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Ticket.Status status, Boolean readable, Boolean writable) {
-            super(ticketNo, ticketName, status, readable, writable);
+        public Response(Long ticketNo, String ticketName, Ticket.Status status) {
+            super(ticketNo, ticketName, status);
         }
     }
 
@@ -44,8 +44,8 @@ public class TicketDto {
         public List<Permission> permissions;
 
         @Builder
-        public Request(Long ticketNo, String ticketName, Ticket.Status status, Boolean readable, Boolean writable, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
-            super(ticketNo, ticketName, status, readable, writable);
+        public Request(Long ticketNo, String ticketName, Ticket.Status status, Long projectNo, Map<Long, String> values, List<Permission> permissions) {
+            super(ticketNo, ticketName, status);
             this.projectNo = projectNo;
             this.values = values;
             this.permissions = permissions;

@@ -10,18 +10,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
-    List<Permission> findAllByUserNo(Long userNo);
+//    List<Permission> findAllByUserNo(Long userNo);
 
-    @Query(value =
-            "SELECT \n" +
-            "    cp.content_no AS contentNo, pm.access_right AS accessRight\n" +
-            "FROM\n" +
-            "    _content_permissions AS cp\n" +
-            "        LEFT JOIN\n" +
-            "    _permission AS pm ON cp.permission_no = pm.permission_no\n" +
-            "WHERE\n" +
-            "    pm.user_no = ?1",
-            nativeQuery = true
+    @Query(
+            nativeQuery = true,
+            value = "SELECT \n" +
+                    "    cp.content_no AS contentNo, pm.access_right AS accessRight\n" +
+                    "FROM\n" +
+                    "    _content_permissions AS cp\n" +
+                    "        LEFT JOIN\n" +
+                    "    _permission AS pm ON cp.permission_no = pm.permission_no\n" +
+                    "WHERE\n" +
+                    "    (pm.user_no IS NULL AND pm.group_no IS NULL)\n" +
+                    "    OR pm.user_no = ?1"
     )
     List<PermissionDao> findPermissionDaoListByUserNo(Long userNo);
 
@@ -34,10 +35,24 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
                     "    _permission AS pm ON cp.permission_no = pm.permission_no\n" +
                     "WHERE\n" +
                     "    cp.content_no = ?2\n" +
-                    "    AND pm.user_no = ?1",
+                    "    AND (pm.user_no IS NULL AND pm.group_no IS NULL\n" +
+                    "    OR pm.user_no = ?1)",
             nativeQuery = true
     )
     Optional<PermissionDao> findPermissionDaoByUserNo(Long userNo, Long contentNo);
 
-    Optional<Permission> findPermissionByUserNoAndAccessRight(Long userNo, AccessRight accessRight);
+    @Query(
+            nativeQuery = true,
+            value = "SELECT \n" +
+                    "    cp.content_no\n" +
+                    "FROM\n" +
+                    "    _content_permissions AS cp\n" +
+                    "        LEFT JOIN\n" +
+                    "    _permission AS pm ON cp.permission_no = pm.permission_no\n" +
+                    "WHERE\n" +
+                    "    pm.user_no IS NULL AND pm.group_no IS NULL\n"
+    )
+    List<Long> findPublicContentNoList();
+
+    Optional<Permission> findPermissionByUserNoAndGroupNoAndAccessRight(Long userNo, Long groupNo, AccessRight accessRight);
 }

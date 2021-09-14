@@ -32,8 +32,6 @@ public class ProjectDto {
     }
 
     public static class Detail extends ProjectDto {
-
-        public Boolean readable;
         public Boolean writable;
         public String description;
         public Long startedAt;
@@ -46,9 +44,8 @@ public class ProjectDto {
         public LocalDateTime updatedAt;
 
         @Builder
-        public Detail(Long projectNo, String projectName, Boolean readable, Boolean writable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public Detail(Long projectNo, String projectName, Boolean writable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types, LocalDateTime createdAt, LocalDateTime updatedAt) {
             super(projectNo, projectName);
-            this.readable = readable;
             this.writable = writable;
             this.description = description;
             this.startedAt = startedAt;
@@ -61,8 +58,6 @@ public class ProjectDto {
     }
 
     public static class Request extends ProjectDto {
-
-        public Boolean readable;
         public String description;
         public Long startedAt;
         public Long endedAt;
@@ -71,9 +66,8 @@ public class ProjectDto {
         public List<Type> types;
 
         @Builder
-        public Request(Long projectNo, String projectName, Boolean readable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types) {
+        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types) {
             super(projectNo, projectName);
-            this.readable = readable;
             this.description = description;
             this.startedAt = startedAt;
             this.endedAt = endedAt;

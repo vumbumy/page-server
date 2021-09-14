@@ -22,22 +22,26 @@ public class PermissionService {
         return permissionRepository.findPermissionDaoListByUserNo(userNo);
     }
 
-    public PermissionDao getPermissionDaoByUserNo(Long contentNo, Long userNo) {
-        return permissionRepository.findPermissionDaoByUserNo(contentNo, userNo)
-                .orElse(null);
+    public List<Long> getPublicContentNoList() {
+        return permissionRepository.findPublicContentNoList();
     }
 
-    public Permission getDefaultPermission(User user) {
-        return this.createIfNotExist(
-                Permission.builder()
-                        .userNo(user.userNo)
-                        .accessRight(AccessRight.WRITE)
-                        .build()
-        );
-    }
+//    public PermissionDao getPermissionDaoByUserNo(Long contentNo, Long userNo) {
+//        return permissionRepository.findPermissionDaoByUserNo(contentNo, userNo)
+//                .orElse(null);
+//    }
+
+//    public Permission getDefaultPermission(User user) {
+//        return this.createIfNotExist(
+//                Permission.builder()
+//                        .userNo(user.userNo)
+//                        .accessRight(AccessRight.WRITE)
+//                        .build()
+//        );
+//    }
 
     public Permission createIfNotExist(Permission permission) {
-        return permissionRepository.findPermissionByUserNoAndAccessRight(permission.userNo, permission.accessRight)
+        return permissionRepository.findPermissionByUserNoAndGroupNoAndAccessRight(permission.userNo, permission.groupNo, permission.accessRight)
                 .orElseGet(() -> permissionRepository.save(permission));
     }
 
