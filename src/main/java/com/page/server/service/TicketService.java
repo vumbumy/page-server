@@ -86,18 +86,19 @@ public class TicketService {
             return null;
         }
 
-        boolean writable = user.isAdmin();
-        if(!writable) {
-            if(!ticket.isReadable(user.userNo, user.groupNo)) {
+        boolean writable = false;
+        if (user != null) {
+            if (!ticket.isReadable(user.userNo, user.groupNo)) {
                 return null;
             }
 
-            writable = ticket.isWritable(user.userNo, user.groupNo);
-
-//            PermissionDao permissionDao = permissionService.getPermissionDaoByUserNo(user.userNo, ticketNo);
-
-//            writable = permissionDao != null && permissionDao.getAccessRight().equals(AccessRight.WRITE);
+            writable = user.isAdmin() || ticket.isWritable(user.userNo, user.groupNo);;
+        } else {
+            if (!ticket.isReadable(null, null)) {
+                return null;
+            }
         }
+
 
         return ticketConvert.toDetail(
                 ticket,
