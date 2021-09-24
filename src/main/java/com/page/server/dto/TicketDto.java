@@ -31,10 +31,12 @@ public class TicketDto {
     }
 
     public static class Response extends TicketDto{
+        public List<ValueDao> values;
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Ticket.Status status) {
+        public Response(Long ticketNo, String ticketName, Ticket.Status status, List<ValueDao> values) {
             super(ticketNo, ticketName, status);
+            this.values = values;
         }
     }
 

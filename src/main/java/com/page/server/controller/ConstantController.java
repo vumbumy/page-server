@@ -31,7 +31,7 @@ public class ConstantController {
         );
     }
 
-    @GetMapping("/types")
+    @GetMapping("/types/data-types")
     public ResponseEntity<Type.DataType[]> getDataTypes() {
         return ResponseEntity.ok(
                 Type.DataType.values()

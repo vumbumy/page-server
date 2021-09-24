@@ -11,7 +11,6 @@ import com.page.server.repository.ValueRepository;
 import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -31,10 +30,18 @@ public class TicketService {
     private final ValueRepository valueRepository;
 
     public List<TicketDao> getPublicTicketList(Long projectNo) {
-        return ticketRepository.findAllReadable(
-                projectNo,
-                permissionService.getPublicContentNoList()
-        );
+        return ticketRepository.findAllReadable(projectNo, permissionService.getPublicContentNoList());
+    }
+
+    public TicketDto.Response getPublicTicket(Long ticketNo) {
+        Ticket ticket = ticketRepository.findById(ticketNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
+
+        if (!ticket.isReadable(null, null)) {
+            throw new RuntimeException("Ticket is not shared.");
+        }
+
+        return ticketConvert.toResponse(ticket, valueRepository.findAllByContentNo(ticketNo));
     }
 
     public List<TicketDto.Response> getTicketListByUser(User user, Long projectNo, Ticket.Status status) {
@@ -81,21 +88,19 @@ public class TicketService {
 
 
     public TicketDto.Detail getTicketByUser(User user, Long ticketNo) {
-        Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
-        if (ticket == null) {
-            return null;
-        }
+        Ticket ticket = ticketRepository.findById(ticketNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
         boolean writable = false;
         if (user != null) {
             if (!ticket.isReadable(user.userNo, user.groupNo)) {
-                return null;
+                throw new RuntimeException("You don't have permission.");
             }
 
             writable = user.isAdmin() || ticket.isWritable(user.userNo, user.groupNo);;
         } else {
             if (!ticket.isReadable(null, null)) {
-                return null;
+                throw new RuntimeException("You don't have permission.");
             }
         }
 
