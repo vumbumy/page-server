@@ -28,13 +28,14 @@ public class ValueService {
         List<Value> valueList = new ArrayList<>();
 
         values.forEach((typeNo, value) -> {
-            Type type = typeRepository.findById(typeNo).orElseThrow(
-                    () -> new RuntimeException("Not Fount Type: " + typeNo)
-            );
+//            Type type = typeRepository.findById(typeNo).orElseThrow(
+//                    () -> new RuntimeException("Not Fount Type: " + typeNo)
+//            );
 
             valueList.add(Value.builder()
                     .contentNo(contentNo)
-                    .type(type)
+                    .typeNo(typeNo)
+//                    .type(type)
                     .dataValue(value)
                     .build()
             );

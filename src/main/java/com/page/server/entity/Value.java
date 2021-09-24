@@ -18,10 +18,13 @@ public class Value extends BaseTimeEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long valueNo;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "type_no")
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "type_no")
+//    @NotNull
+//    public Type type;
+
     @NotNull
-    public Type type;
+    public Long typeNo;
 
     @NotNull
     public Long contentNo;
@@ -29,9 +32,9 @@ public class Value extends BaseTimeEntity implements Serializable {
     public String dataValue;
 
     @Builder
-    public Value(Long valueNo, @NotNull Type type, @NotNull Long contentNo, String dataValue) {
+    public Value(Long valueNo, @NotNull Long typeNo, @NotNull Long contentNo, String dataValue) {
         this.valueNo = valueNo;
-        this.type = type;
+        this.typeNo = typeNo;
         this.contentNo = contentNo;
         this.dataValue = dataValue;
     }
