@@ -3,6 +3,7 @@ package com.page.server.service;
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
 import com.page.server.dao.TicketDao;
+import com.page.server.dao.ValueDao;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.*;
 import com.page.server.repository.TicketRepository;
@@ -26,8 +27,10 @@ public class TicketService {
 
     private final PermissionService permissionService;
 
-    private final TypeRepository typeRepository;
-    private final ValueRepository valueRepository;
+//    private final TypeRepository typeRepository;
+//    private final ValueRepository valueRepository;
+
+    private final ValueService valueService;
 
     public List<TicketDao> getPublicTicketList(Long projectNo) {
         return ticketRepository.findAllReadable(projectNo, permissionService.getPublicContentNoList());
@@ -41,7 +44,7 @@ public class TicketService {
             throw new RuntimeException("Ticket is not shared.");
         }
 
-        return ticketConvert.toResponse(ticket, valueRepository.findAllByContentNo(ticketNo));
+        return ticketConvert.toResponse(ticket, valueService.get(ticketNo));
     }
 
     public List<TicketDto.Response> getTicketListByUser(User user, Long projectNo, Ticket.Status status) {
@@ -108,7 +111,7 @@ public class TicketService {
         return ticketConvert.toDetail(
                 ticket,
                 writable,
-                valueRepository.findAllByContentNo(ticketNo)
+                valueService.get(ticketNo)
         );
     }
 
@@ -127,21 +130,7 @@ public class TicketService {
                         .build()
         );
 
-        List<Value> valueList = new ArrayList<>();
-        request.values.forEach((typeNo, value) -> {
-            Type type = typeRepository.findById(typeNo).orElseThrow(
-                    () -> new RuntimeException("Not Fount Type: " + typeNo)
-            );
-
-            valueList.add(Value.builder()
-                    .contentNo(ticket.contentNo)
-                    .type(type)
-                    .dataValue(value)
-                    .build()
-            );
-        });
-
-        valueRepository.saveAll(valueList);
+        valueService.add(ticket.contentNo, request.values);
 
         return ticketConvert.toResponse(ticket);
     };
@@ -161,6 +150,8 @@ public class TicketService {
         ticket.status = request.status;
         ticket.permissions = permissionService
                 .addListIfNotExist(request.permissions);
+
+        valueService.put(ticket.contentNo, request.values);
 
         ticketRepository.save(ticket);
     };

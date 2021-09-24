@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface ValueRepository extends JpaRepository<Value, Long> {
     @Query(value = "SELECT value_no AS valueNo, type_no AS typeNo, data_value AS dataValue FROM _value WHERE content_no = ?1", nativeQuery = true)
-    List<ValueDao> findAllByContentNo(Long contentNo);
+    List<ValueDao> findAllDaoByContentNo(Long contentNo);
+
+    List<Value> findAllByContentNo(Long contentNo);
 }
