@@ -40,12 +40,12 @@ public class ProjectController {
         );
     }
 
-    @PutMapping("/status")
-    public ResponseEntity<Object> updateProjectStatus(@AuthenticationPrincipal User user, @RequestBody ProjectDto.Request request) {
-        projectService.updateProjectStatus(user, request);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PutMapping("/status")
+//    public ResponseEntity<Object> updateProjectStatus(@AuthenticationPrincipal User user, @RequestBody ProjectDto.Request request) {
+//        projectService.updateProjectStatus(user, request);
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
     @PutMapping("")
     public ResponseEntity<Object> updateProject(@AuthenticationPrincipal User user, @RequestBody ProjectDto.Request request) {

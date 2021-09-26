@@ -120,26 +120,29 @@ public class ProjectService {
         }
 
         project.contentName = request.projectName;
-        project.permissions = permissionService
-                .addListIfNotExist(request.permissions);
+        project.startedAt = request.startedAt;
+        project.endedAt = request.endedAt;
+        project.description = request.description;
+        project.permissions = permissionService.addListIfNotExist(request.permissions);
+        project.types = typeService.addListIfNotExist(request.types);
 
         projectRepository.save(project);
     };
 
-    public void updateProjectStatus(User user, ProjectDto request) {
-        Project project = projectRepository.findById(request.projectNo).orElse(null);
-        if (project == null) {
-            throw new IllegalArgumentException("Not found project.");
-        }
-
-        if(!user.isAdmin() && !project.isWritable(user.userNo, user.groupNo)) {
-            throw new RuntimeException("You don't have permission.");
-        }
-
-        project.contentName = request.projectName;
-
-        projectRepository.save(project);
-    };
+//    public void updateProjectStatus(User user, ProjectDto request) {
+//        Project project = projectRepository.findById(request.projectNo).orElse(null);
+//        if (project == null) {
+//            throw new IllegalArgumentException("Not found project.");
+//        }
+//
+//        if(!user.isAdmin() && !project.isWritable(user.userNo, user.groupNo)) {
+//            throw new RuntimeException("You don't have permission.");
+//        }
+//
+//        project.contentName = request.projectName;
+//
+//        projectRepository.save(project);
+//    };
 
     public void deleteProject(User user, Long projectNo) {
         Project project = projectRepository.findById(projectNo).orElse(null);
