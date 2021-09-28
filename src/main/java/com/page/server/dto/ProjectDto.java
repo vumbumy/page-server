@@ -63,10 +63,10 @@ public class ProjectDto {
         public Long endedAt;
 
         public List<Permission> permissions;
-        public List<Type> types;
+        public List<TypeDto> types;
 
         @Builder
-        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types) {
+        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<TypeDto> types) {
             super(projectNo, projectName);
             this.description = description;
             this.startedAt = startedAt;

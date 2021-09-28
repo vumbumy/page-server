@@ -14,7 +14,7 @@ public class Type implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public enum DataType {
-        String, Number
+        Text, TextArea, Number, Datetime, Date, URL
     }
 
     @Id
@@ -30,5 +30,6 @@ public class Type implements Serializable {
     public String defaultValue;
 
     public Boolean required = false;
-    public Boolean deleted = false;
+    
+//    public Boolean deleted = false;
 }

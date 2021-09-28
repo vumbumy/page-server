@@ -86,8 +86,11 @@ public class ProjectService {
             return null;
         }
 
+        List<Type> typeList = typeService.getTypeList(projectNo);
+
         return projectConvert.to(
                 project,
+                typeList,
                 user.isAdmin() || project.isWritable(user.userNo, user.groupNo)
         );
     }
@@ -95,20 +98,25 @@ public class ProjectService {
     @Transactional
     public ProjectDto.Detail createProject(User user, ProjectDto.Request request) {
         List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
-        List<Type> types = typeService.addListIfNotExist(request.types);
 
         Project project = Project.builder()
                 .managerNo(user.userNo)
                 .contentName(request.projectName)
                 .permissions(permissions)
-                .types(types)
                 .build();
 
+        project = projectRepository.save(project);
+
+        List<Type> typeList = typeService.saveTypeListIfNotExist(project.contentNo, request.types);
+
         return projectConvert.to(
-                projectRepository.save(project), Boolean.TRUE
+                project,
+                typeList,
+                Boolean.TRUE
         );
     };
 
+    @Transactional
     public void updateProject(User user, ProjectDto.Request request) {
         Project project = projectRepository.findById(request.projectNo).orElse(null);
         if (project == null) {
@@ -124,9 +132,10 @@ public class ProjectService {
         project.endedAt = request.endedAt;
         project.description = request.description;
         project.permissions = permissionService.addListIfNotExist(request.permissions);
-        project.types = typeService.addListIfNotExist(request.types);
+//        project.types = typeService.addListIfNotExist(request.types);
 
         projectRepository.save(project);
+        typeService.saveTypeListIfNotExist(project.contentNo, request.types);
     };
 
 //    public void updateProjectStatus(User user, ProjectDto request) {
