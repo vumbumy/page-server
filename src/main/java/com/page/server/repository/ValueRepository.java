@@ -8,8 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ValueRepository extends JpaRepository<Value, Long> {
-    @Query(value = "SELECT value_no AS valueNo, type_no AS typeNo, data_value AS dataValue FROM _value WHERE content_no = ?1", nativeQuery = true)
-    List<ValueDao> findAllDaoByContentNo(Long contentNo);
+    @Query(
+            nativeQuery = true,
+            value = "SELECT\n" +
+                    "    value_no AS valueNo,\n" +
+                    "    type_no AS typeNo,\n" +
+                    "    data_value AS dataValue\n" +
+                    "FROM\n" +
+                    "    _value\n" +
+                    "WHERE\n" +
+                    "    content_no = ?1\n" +
+                    "    AND type_no IN (?2)"
+    )
+    List<ValueDao> findAllDaoByContentNo(Long contentNo, List<Long> typeNoList);
 
     List<Value> findAllByContentNo(Long contentNo);
 }

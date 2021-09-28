@@ -44,7 +44,10 @@ public class TicketService {
             throw new RuntimeException("Ticket is not shared.");
         }
 
-        return ticketConvert.toResponse(ticket, valueService.get(ticketNo));
+        return ticketConvert.toResponse(
+                ticket,
+                valueService.getTicketValues(ticket)
+        );
     }
 
     public List<TicketDto.Response> getTicketListByUser(User user, Long projectNo, Ticket.Status status) {
@@ -107,11 +110,10 @@ public class TicketService {
             }
         }
 
-
         return ticketConvert.toDetail(
                 ticket,
                 writable,
-                valueService.get(ticketNo)
+                valueService.getTicketValues(ticket)
         );
     }
 
