@@ -21,5 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     Boolean findEmailIsActivated(String userName);
 
-    List<User> findAllByGroupNo(Long groupNo);
+    @Query(
+            nativeQuery = true,
+            value = "SELECT u FROM _user as u LEFT JOIN _user_group_ref AS ugr ON u.user_no = ugr.user_no WHERE ugr.group_no IN (?1)"
+    )
+    List<User> findAllByGroupNoList(List<Long> groupNoList);
 }

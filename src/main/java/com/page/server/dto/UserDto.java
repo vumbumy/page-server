@@ -2,11 +2,14 @@ package com.page.server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
+import sun.rmi.runtime.Log;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
     public String email;
     public String phoneNumber;
@@ -24,16 +27,8 @@ public class UserDto {
         }
     }
 
-    public static class Request extends UserDto{
+    public static class Request extends UserDto {
         public Long userNo;
         public String password;
-        public Long groupNo;
-
-        public Request(String email, String phoneNumber, List<String> roles, Long userNo, String password, Long groupNo) {
-            super(email, phoneNumber, roles);
-            this.userNo = userNo;
-            this.password = password;
-            this.groupNo = groupNo;
-        }
     }
 }

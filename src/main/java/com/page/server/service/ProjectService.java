@@ -51,10 +51,10 @@ public class ProjectService {
                     )
             );
         } else {
-            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
+            List<PermissionDao.Content> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
 
             Map<Long, AccessRight> accessRightMap = pDaoList.stream()
-                    .collect(Collectors.toMap(PermissionDao::getContentNo, PermissionDao::getAccessRight));
+                    .collect(Collectors.toMap(PermissionDao.Content::getContentNo, PermissionDao::getAccessRight));
 
             List<ProjectDao> tDaoList = projectRepository.findAllByProjectNoContains(
                     accessRightMap.keySet()
@@ -82,13 +82,13 @@ public class ProjectService {
             return null;
         }
 
-        if (!user.isAdmin() && !project.isReadable(user.userNo, user.groupNo)) {
+        if (!user.isAdmin() && !project.isReadable(user.userNo, null)) {
             return null;
         }
 
         return projectConvert.to(
                 project,
-                user.isAdmin() || project.isWritable(user.userNo, user.groupNo)
+                user.isAdmin() || project.isWritable(user.userNo, null)
         );
     }
 
@@ -115,7 +115,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !project.isWritable(user.userNo, null)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -150,7 +150,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !project.isWritable(user.userNo, null)) {
             throw new RuntimeException("Not found project.");
         }
 
@@ -165,7 +165,7 @@ public class ProjectService {
             throw new IllegalArgumentException("Not found project.");
         }
 
-        if(!user.isAdmin() && !project.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !project.isWritable(user.userNo, null)) {
             throw new RuntimeException("You don't have permission.");
         }
 

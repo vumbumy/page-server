@@ -64,10 +64,10 @@ public class TicketService {
                     .build())
             );
         } else {
-            List<PermissionDao> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
+            List<PermissionDao.Content> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
 
             Map<Long, AccessRight> accessRightMap = pDaoList.stream()
-                    .collect(Collectors.toMap(PermissionDao::getContentNo, PermissionDao::getAccessRight));
+                    .collect(Collectors.toMap(PermissionDao.Content::getContentNo, PermissionDao::getAccessRight));
 
             List<TicketDao> tDaoList = ticketRepository.findAllByTicketNoContains(
                     projectNo,
@@ -99,11 +99,11 @@ public class TicketService {
 
         boolean writable = false;
         if (user != null) {
-            if (!ticket.isReadable(user.userNo, user.groupNo)) {
+            if (!ticket.isReadable(user.userNo, null)) {
                 throw new RuntimeException("You don't have permission.");
             }
 
-            writable = user.isAdmin() || ticket.isWritable(user.userNo, user.groupNo);;
+            writable = user.isAdmin() || ticket.isWritable(user.userNo, null);;
         } else {
             if (!ticket.isReadable(null, null)) {
                 throw new RuntimeException("You don't have permission.");
@@ -144,7 +144,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -164,7 +164,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
             throw new RuntimeException("You don't have permission.");
         }
 
@@ -180,7 +180,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
             throw new RuntimeException("Not found ticket.");
         }
 
@@ -195,7 +195,7 @@ public class TicketService {
             throw new IllegalArgumentException("Not found ticket.");
         }
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, user.groupNo)) {
+        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
             throw new RuntimeException("You don't have permission.");
         }
 

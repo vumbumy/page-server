@@ -49,13 +49,13 @@ public class BaseContent extends BaseTimeEntity {
         return managerNo.equals(userNo);
     }
 
-    public boolean isReadable (Long userNo, Long groupNo) {
+    public boolean isReadable (Long userNo, List<Long> groupNo) {
         return this.isManager(userNo) || this.permissions.stream()
-                .anyMatch(permission -> permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo) || permission.isPublic());
+                .anyMatch(permission -> permission.isUserNo(userNo) || groupNo.contains(groupNo) || permission.isPublic());
     }
 
-    public boolean isWritable(Long userNo, Long groupNo) {
+    public boolean isWritable(Long userNo, List<Long> groupNo) {
         return this.isManager(userNo) || this.permissions.stream()
-                .anyMatch(permission -> (permission.hasUserNo(userNo) || permission.hasGroupNo(groupNo) || permission.isPublic()) && permission.accessRight.equals(AccessRight.WRITE));
+                .anyMatch(permission -> (permission.isUserNo(userNo) || groupNo.contains(groupNo) || permission.isPublic()) && permission.accessRight.equals(AccessRight.WRITE));
     }
 }

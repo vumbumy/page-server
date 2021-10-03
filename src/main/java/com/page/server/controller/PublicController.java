@@ -24,12 +24,12 @@ public class PublicController {
 
     private final TypeRepository typeRepository;
 
-    @GetMapping("/projects")
-    public ResponseEntity<List<ProjectDao>> getProjects() {
-        return ResponseEntity.ok(
-                projectService.getPublicProjectList()
-        );
-    }
+//    @GetMapping("/projects")
+//    public ResponseEntity<List<ProjectDao>> getProjects() {
+//        return ResponseEntity.ok(
+//                projectService.getPublicProjectList()
+//        );
+//    }
 
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketDao>> getTickets(@RequestParam(required = false) Long projectNo) {
@@ -48,7 +48,7 @@ public class PublicController {
     @GetMapping("/types")
     public ResponseEntity<List<Type>> getTypeList() {
         return ResponseEntity.ok(
-                typeRepository.findAll()
+                typeRepository.findAllByDeletedFalseOrDeletedIsNull()
         );
     }
 }

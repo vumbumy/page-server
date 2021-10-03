@@ -3,10 +3,13 @@ package com.page.server.entity;
 import com.page.server.entity.base.BaseTimeEntity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "_USER_GROUP")
@@ -20,8 +23,16 @@ public class UserGroup extends BaseTimeEntity implements Serializable {
 
     public String groupName;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JoinTable(
+            name = "_USER_GROUP_PERMISSIONS",
+            joinColumns = @JoinColumn(name = "GROUP_NO"),
+            inverseJoinColumns = @JoinColumn(name = "PERMISSION_NO"))
+    public List<Permission> permissions;
+
     @Builder
-    public UserGroup(Long groupNo, String groupName) {
+    public UserGroup(Long groupNo, String groupName, List<User> users) {
         this.groupNo = groupNo;
         this.groupName = groupName;
     }

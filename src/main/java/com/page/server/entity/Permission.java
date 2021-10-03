@@ -40,11 +40,11 @@ public class Permission extends BaseTimeEntity implements Serializable {
         return this.userNo == null && this.groupNo == null;
     }
 
-    public Boolean hasUserNo(Long userNo){
+    public Boolean isUserNo(Long userNo){
         return this.userNo != null && this.userNo.equals(userNo);
     }
 
-    public Boolean hasGroupNo(Long groupNo){
-        return this.groupNo != null && this.groupNo.equals(groupNo);
-    }
+//    public Boolean hasGroupNo(Long groupNo){
+//        return this.groupNo != null && this.groupNo.equals(groupNo);
+//    }
 }

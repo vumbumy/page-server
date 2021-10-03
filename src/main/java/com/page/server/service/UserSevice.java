@@ -5,7 +5,6 @@ import com.page.server.dto.UserDto;
 import com.page.server.entity.Role;
 import com.page.server.entity.User;
 import com.page.server.repository.RoleRepository;
-import com.page.server.repository.UserGroupRepository;
 import com.page.server.repository.UserRepository;
 import com.page.server.support.UserConvert;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserSevice {
     private final UserRepository userRepository;
-    private final UserGroupRepository userGroupRepository;
+//    private final UserGroupRepository userGroupRepository;
+
+//    private final UserGroupService userGroupService;
+
     private final RoleRepository roleRepository;
 
     private final UserConvert userConvert;
@@ -50,7 +52,7 @@ public class UserSevice {
 
         oldUser.email = updated.email;
         oldUser.phoneNumber = updated.phoneNumber;
-        oldUser.groupNo = updated.groupNo;
+//        oldUser.groupNo = updated.groupNo;
 
         List<Role> roleList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(updated.roles)) {
@@ -78,16 +80,17 @@ public class UserSevice {
             return userRepository.findAll();
         }
 
-        return userRepository.findAllByGroupNo(user.groupNo);
+//        return userRepository.findAllByGroupNo(user.groupNo);
+        return  null;
     }
 
     public UserDto.Info convertUser(User user) {
         UserDto.Info userInfo = userConvert.to(user);
 
-        if (user.groupNo != null) {
-            userGroupRepository.findById(user.groupNo)
-                    .ifPresent(userGroup -> userInfo.groupName = userGroup.groupName);
-        }
+//        if (user.groupNo != null) {
+//            userGroupRepository.findById(user.groupNo)
+//                    .ifPresent(userGroup -> userInfo.groupName = userGroup.groupName);
+//        }
 
         return userInfo;
     }

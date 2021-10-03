@@ -42,8 +42,8 @@ public class User extends BaseTimeEntity implements UserDetails {
 			inverseJoinColumns = @JoinColumn(name = "ROLE_NO"))
     public List<Role> roles;
 
-    @Column
-    public Long groupNo;
+//    @Column
+//    public Long groupNo;
 
     @Column
     public Boolean activated;
@@ -59,9 +59,9 @@ public class User extends BaseTimeEntity implements UserDetails {
         );
     }
 
-    public Boolean equalsNo(Long userNo) {
-        return this.userNo.equals(userNo);
-    }
+//    public Boolean equalsNo(Long userNo) {
+//        return this.userNo.equals(userNo);
+//    }
 
     @Override
     public String getUsername() {
@@ -92,7 +92,7 @@ public class User extends BaseTimeEntity implements UserDetails {
         return roles.stream().anyMatch(role -> role.value.equals(Role.PREFIX + Role.ADMIN));
     }
 
-    public boolean isPartnerAdmin() {
-        return roles.stream().anyMatch(role -> role.value.equals(Role.PREFIX + Role.PARTNER));
-    }
+//    public boolean isPartnerAdmin() {
+//        return roles.stream().anyMatch(role -> role.value.equals(Role.PREFIX + Role.PARTNER));
+//    }
 }
