@@ -23,31 +23,31 @@ public class UserGroupController {
         );
     }
 
-    @PutMapping(value = "")
+    @PostMapping(value = "")
     ResponseEntity<UserGroup> createUserGroup(@AuthenticationPrincipal User user, @RequestBody UserGroup userGroup) {
         return ResponseEntity.ok(
-                userGroupService.updateUserGroup(userGroup)
+                userGroupService.addUserGroup(user, userGroup)
         );
     }
 
     @GetMapping(value = "/{groupNo}")
-    ResponseEntity<UserGroup> getUserGroup(@PathVariable Long groupNo) {
+    ResponseEntity<UserGroup> getUserGroup(@AuthenticationPrincipal User user, @PathVariable Long groupNo) {
         return ResponseEntity.ok(
-                userGroupService.getUserGroup(groupNo)
+                userGroupService.getUserGroup(user, groupNo)
         );
     }
 
     @PutMapping(value = "")
-    ResponseEntity<UserGroup> updateUserGroup(@RequestBody UserGroup userGroup) {
+    ResponseEntity<UserGroup> updateUserGroup(@AuthenticationPrincipal User user, @RequestBody UserGroup userGroup) {
         return ResponseEntity.ok(
-                userGroupService.updateUserGroup(userGroup)
+                userGroupService.updateUserGroup(user, userGroup)
         );
     }
 
     @DeleteMapping(value = "/{groupNo}")
-    ResponseEntity<Boolean> deleteUserGroup(@PathVariable Long groupNo) {
+    ResponseEntity<Boolean> deleteUserGroup(@AuthenticationPrincipal User user, @PathVariable Long groupNo) {
         return ResponseEntity.ok(
-                userGroupService.deleteUserGroup(groupNo)
+                userGroupService.deleteUserGroup(user, groupNo)
         );
     }
 }

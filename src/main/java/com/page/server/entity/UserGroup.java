@@ -1,5 +1,6 @@
 package com.page.server.entity;
 
+import com.page.server.constant.AccessRight;
 import com.page.server.entity.base.BaseTimeEntity;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -35,5 +36,20 @@ public class UserGroup extends BaseTimeEntity implements Serializable {
     public UserGroup(Long groupNo, String groupName, List<User> users) {
         this.groupNo = groupNo;
         this.groupName = groupName;
+    }
+
+    public boolean isReadable (Long userNo, List<Long> groupNo) {
+        return this.permissions != null && this.permissions.stream()
+                .anyMatch(permission -> permission.isUserNo(userNo)
+                        || (groupNo != null && groupNo.contains(groupNo))
+                        || permission.isPublic());
+    }
+
+    public boolean isWritable(Long userNo, List<Long> groupNo) {
+        return this.permissions != null && this.permissions.stream()
+                .anyMatch(permission -> (permission.isUserNo(userNo)
+                        || (groupNo != null && groupNo.contains(groupNo))
+                        || permission.isPublic())
+                        && permission.accessRight.equals(AccessRight.WRITE));
     }
 }

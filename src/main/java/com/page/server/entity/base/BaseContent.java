@@ -50,12 +50,21 @@ public class BaseContent extends BaseTimeEntity {
     }
 
     public boolean isReadable (Long userNo, List<Long> groupNo) {
-        return this.isManager(userNo) || this.permissions.stream()
-                .anyMatch(permission -> permission.isUserNo(userNo) || groupNo.contains(groupNo) || permission.isPublic());
+        return this.isManager(userNo) || (
+                this.permissions != null && this.permissions.stream()
+                        .anyMatch(permission -> permission.isUserNo(userNo)
+                                || (groupNo != null && groupNo.contains(groupNo))
+                                || permission.isPublic())
+        );
     }
 
     public boolean isWritable(Long userNo, List<Long> groupNo) {
-        return this.isManager(userNo) || this.permissions.stream()
-                .anyMatch(permission -> (permission.isUserNo(userNo) || groupNo.contains(groupNo) || permission.isPublic()) && permission.accessRight.equals(AccessRight.WRITE));
+        return this.isManager(userNo) || (
+                this.permissions != null && this.permissions.stream()
+                        .anyMatch(permission -> (permission.isUserNo(userNo)
+                                || (groupNo != null && groupNo.contains(groupNo))
+                                || permission.isPublic())
+                                && permission.accessRight.equals(AccessRight.WRITE))
+        );
     }
 }
