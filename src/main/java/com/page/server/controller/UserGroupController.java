@@ -1,5 +1,6 @@
 package com.page.server.controller;
 
+import com.page.server.dto.GroupDto;
 import com.page.server.entity.User;
 import com.page.server.entity.UserGroup;
 import com.page.server.service.UserGroupService;
@@ -31,7 +32,7 @@ public class UserGroupController {
     }
 
     @GetMapping(value = "/{groupNo}")
-    ResponseEntity<UserGroup> getUserGroup(@AuthenticationPrincipal User user, @PathVariable Long groupNo) {
+    ResponseEntity<GroupDto> getUserGroup(@AuthenticationPrincipal User user, @PathVariable Long groupNo) {
         return ResponseEntity.ok(
                 userGroupService.getUserGroup(user, groupNo)
         );

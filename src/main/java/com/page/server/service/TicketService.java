@@ -26,9 +26,7 @@ public class TicketService {
     private final TicketConvert ticketConvert;
 
     private final PermissionService permissionService;
-
-//    private final TypeRepository typeRepository;
-//    private final ValueRepository valueRepository;
+    private final UserGroupService userGroupService;
 
     private final ValueService valueService;
 
@@ -99,7 +97,7 @@ public class TicketService {
 
         boolean writable = false;
         if (user != null) {
-            if (!ticket.isReadable(user.userNo, null)) {
+            if (!user.isAdmin() && !ticket.isReadable(user.userNo, null)) {
                 throw new RuntimeException("You don't have permission.");
             }
 
@@ -121,6 +119,11 @@ public class TicketService {
     public TicketDto.Response createTicket(User user, TicketDto.Request request) {
 
         List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
+        if (!user.isAdmin()) {
+            permissions.add(
+                    permissionService.getDefaultPermission(user)
+            );
+        }
 
         Ticket ticket = ticketRepository.save(
                 Ticket.builder()
@@ -163,6 +166,8 @@ public class TicketService {
         if (ticket == null) {
             throw new IllegalArgumentException("Not found ticket.");
         }
+
+
 
         if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
             throw new RuntimeException("You don't have permission.");

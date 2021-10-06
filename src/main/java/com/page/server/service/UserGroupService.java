@@ -2,10 +2,15 @@ package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
+import com.page.server.dto.GroupDto;
+import com.page.server.dto.PermissionDto;
 import com.page.server.entity.Permission;
 import com.page.server.entity.User;
 import com.page.server.entity.UserGroup;
 import com.page.server.repository.UserGroupRepository;
+import com.page.server.repository.UserRepository;
+import com.page.server.support.GroupConvert;
+import com.page.server.support.UserConvert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,6 +29,10 @@ import java.util.stream.Collectors;
 public class UserGroupService {
     private final UserGroupRepository userGroupRepository;
     private final PermissionService permissionService;
+
+    private final UserRepository userRepository;
+
+    private final GroupConvert groupConvert;
 
 //    public List<UserGroup> getAllUserGroupList() {
 //        return userGroupRepository.findAll();
@@ -57,7 +67,7 @@ public class UserGroupService {
         return userGroupRepository.save(userGroup);
     }
 
-    public UserGroup getUserGroup(User user, Long groupNo) {
+    public GroupDto.Response getUserGroup(User user, Long groupNo) {
         UserGroup userGroup = userGroupRepository.findById(groupNo)
                 .orElseThrow(() -> new IllegalArgumentException("Can't Find Group."));
 
@@ -65,7 +75,31 @@ public class UserGroupService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        return userGroup;
+        List<User> userList = userRepository.findAllByUserNoIn(
+                userGroup.permissions.stream()
+                        .map(permission -> permission.userNo)
+                        .collect(Collectors.toList())
+        );
+
+        Map<Long, User> userMap = userList.stream()
+                .collect(Collectors.toMap(u -> u.userNo, u -> u));
+
+        List<PermissionDto.User> userDtoList = new ArrayList<>();
+        userGroup.permissions.forEach(permission -> {
+            if (permission.userNo == null) return;
+
+            User u = userMap.get(permission.userNo);
+
+            userDtoList.add(
+                    PermissionDto.User.builder()
+                            .userNo(u.userNo)
+                            .email(u.email)
+                            .accessRight(permission.accessRight)
+                            .build()
+            );
+        });
+
+        return groupConvert.toResponse(userGroup, userDtoList);
     }
 
     @Transactional

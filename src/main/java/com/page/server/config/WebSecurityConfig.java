@@ -39,9 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             .and()
             .requestMatchers().and()
             .authorizeRequests()
-                .antMatchers("/secured/admin/users").hasAnyRole(Role.ADMIN, Role.PARTNER)
+                .antMatchers("/secured/admin/users").hasAnyRole(Role.ADMIN)
                 .antMatchers("/secured/admin/**").hasRole(Role.ADMIN)
-                .antMatchers("/secured/**").hasAnyRole(Role.USER, Role.ADMIN, Role.PARTNER)
+                .antMatchers("/secured/**").hasAnyRole(Role.USER, Role.ADMIN)
                 .antMatchers("/**").permitAll()
             .and()
             .addFilterBefore(

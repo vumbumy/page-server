@@ -1,7 +1,9 @@
 package com.page.server.service;
 
+import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
 import com.page.server.entity.Permission;
+import com.page.server.entity.User;
 import com.page.server.repository.PermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,14 +29,14 @@ public class PermissionService {
         return permissionRepository.findPermissionListByUser(userNo);
     }
 
-//    public Permission getDefaultPermission(User user) {
-//        return this.createIfNotExist(
-//                Permission.builder()
-//                        .userNo(user.userNo)
-//                        .accessRight(AccessRight.WRITE)
-//                        .build()
-//        );
-//    }
+    public Permission getDefaultPermission(User user) {
+        return this.createIfNotExist(
+                Permission.builder()
+                        .userNo(user.userNo)
+                        .accessRight(AccessRight.WRITE)
+                        .build()
+        );
+    }
 
     public Permission createIfNotExist(Permission permission) {
         return permissionRepository.findPermissionByUserNoAndGroupNoAndAccessRight(permission.userNo, permission.groupNo, permission.accessRight)

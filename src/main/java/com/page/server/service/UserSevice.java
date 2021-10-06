@@ -84,8 +84,8 @@ public class UserSevice {
         return  null;
     }
 
-    public UserDto.Info convertUser(User user) {
-        UserDto.Info userInfo = userConvert.to(user);
+    public UserDto.Response convertUser(User user) {
+        UserDto.Response userInfo = userConvert.toResponse(user);
 
 //        if (user.groupNo != null) {
 //            userGroupRepository.findById(user.groupNo)

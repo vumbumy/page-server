@@ -35,22 +35,24 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "FROM\n" +
                     "    _project AS prj\n" +
                     "    LEFT JOIN _user AS usr ON prj.manager_no = usr.user_no\n" +
-                    "    LEFT JOIN _ticket AS tk ON tk.project_no = prj.content_no" +
+                    "    LEFT JOIN _ticket AS tk ON tk.project_no = prj.content_no\n" +
                     "WHERE\n" +
-                    "    (prj.readable OR prj.content_no IN (?1))"
+                    "    prj.content_no IN (?1)\n" +
+                    "GROUP BY\n" +
+                    "    projectNo"
 
     )
-    List<ProjectDao> findAllByProjectNoContains(Set<Long> projectNoList);
+    List<ProjectDao> findAllByProjectNoIn(Set<Long> projectNoList);
 
-    @Query(value =
-            "SELECT \n" +
-            "    prj.content_no as projectNo,\n" +
-            "    prj.content_name as projectName\n" +
-            "FROM\n" +
-            "    _project AS prj\n" +
-            "WHERE\n" +
-            "    prj.readable",
-            nativeQuery = true
-    )
-    List<ProjectDao> findAllReadable();
+//    @Query(value =
+//            "SELECT \n" +
+//            "    prj.content_no as projectNo,\n" +
+//            "    prj.content_name as projectName\n" +
+//            "FROM\n" +
+//            "    _project AS prj\n" +
+//            "WHERE\n" +
+//            "    prj.readable",
+//            nativeQuery = true
+//    )
+//    List<ProjectDao> findAllReadable();
 }

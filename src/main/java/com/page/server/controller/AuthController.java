@@ -79,7 +79,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/secured/me")
-    ResponseEntity<UserDto.Info> getMe(@AuthenticationPrincipal User user) {
+    ResponseEntity<UserDto.Response> getMe(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
                 userSevice.convertUser(user)
         );

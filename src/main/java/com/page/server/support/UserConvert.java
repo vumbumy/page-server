@@ -12,7 +12,7 @@ public interface UserConvert {
 
     User from(SignDto.InRequest request);
 
-    UserDto.Info to(User user);
+    UserDto.Response toResponse(User user);
 
     default String roleToString(Role role) {
         return role.value;

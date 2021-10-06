@@ -85,7 +85,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !ObjectUtils.isEmpty(roles);
+        return activated && !ObjectUtils.isEmpty(roles);
     }
 
     public boolean isAdmin() {

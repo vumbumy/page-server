@@ -25,9 +25,9 @@ public class ProjectService {
     private final PermissionService permissionService;
     private final TypeService typeService;
 
-    public List<ProjectDao> getPublicProjectList() {
-        return projectRepository.findAllReadable();
-    }
+//    public List<ProjectDao> getPublicProjectList() {
+//        return projectRepository.findAllReadable();
+//    }
 
     public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writable) {
         return ProjectDto.Response.builder()
@@ -56,7 +56,7 @@ public class ProjectService {
             Map<Long, AccessRight> accessRightMap = pDaoList.stream()
                     .collect(Collectors.toMap(PermissionDao.Content::getContentNo, PermissionDao::getAccessRight));
 
-            List<ProjectDao> tDaoList = projectRepository.findAllByProjectNoContains(
+            List<ProjectDao> tDaoList = projectRepository.findAllByProjectNoIn(
                     accessRightMap.keySet()
             );
 

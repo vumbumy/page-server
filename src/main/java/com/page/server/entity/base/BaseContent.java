@@ -23,7 +23,7 @@ public class BaseContent extends BaseTimeEntity {
 
     public String contentName;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(
             name = "_CONTENT_PERMISSIONS",
