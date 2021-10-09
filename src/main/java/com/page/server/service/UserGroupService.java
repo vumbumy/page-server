@@ -2,6 +2,7 @@ package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
+import com.page.server.dao.UserGroupDao;
 import com.page.server.dto.GroupDto;
 import com.page.server.dto.PermissionDto;
 import com.page.server.entity.Permission;
@@ -48,6 +49,24 @@ public class UserGroupService {
                 permissionList.stream().map(PermissionDao.No::getPermissionNo)
                         .collect(Collectors.toList())
         );
+    }
+
+    public List<Long> getUserGroupNoListByUser(User user) {
+        List<UserGroupDao> daoList;
+
+        if (user.isAdmin()) {
+            daoList = userGroupRepository.findAllUserGroupNoList();
+        } else {
+            List<PermissionDao.No> permissionList = permissionService.getPermissionListByUserNo(user.userNo);
+
+            daoList = userGroupRepository.findUserGroupNoListByPermissionNos(
+                    permissionList.stream().map(PermissionDao.No::getPermissionNo)
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return daoList.stream().map(UserGroupDao::getGroupNo)
+                .collect(Collectors.toList());
     }
 
     public UserGroup addUserGroup(User user, UserGroup userGroup) {
@@ -114,6 +133,20 @@ public class UserGroupService {
         return userGroupRepository.save(userGroup);
     }
 
+    @Transactional
+    public UserGroup updateUserGroupPermissions(User user, Long groupNo, List<PermissionDto.User> userPermissions) {
+        UserGroup userGroup = userGroupRepository.findById(groupNo)
+                .orElseThrow(() -> new IllegalArgumentException("Can't Find Group."));
+
+        if (!user.isAdmin() && !userGroup.isWritable(user.userNo, null)) {
+            throw new RuntimeException("You don't have permission.");
+        }
+
+        userGroup.permissions = this.addUserPermissionList(userPermissions);
+
+        return userGroupRepository.save(userGroup);
+    }
+
     public Boolean deleteUserGroup(User user, Long groupNo) {
         UserGroup oldUserGroup = userGroupRepository.findById(groupNo)
                 .orElseThrow(() -> new IllegalArgumentException("Can't Find Group."));
@@ -127,29 +160,43 @@ public class UserGroupService {
         return userGroupRepository.findById(groupNo).isPresent();
     }
 
-    public void addGroupListToReadIfNotExist(Long userNo, List<Long> groupNos) {
-        List<UserGroup> userGroupList = new ArrayList<>();
+//    public void addGroupListToReadIfNotExist(Long userNo, List<Long> groupNos) {
+//        List<UserGroup> userGroupList = new ArrayList<>();
+//
+//        Permission permission = permissionService.createIfNotExist(
+//                Permission.builder()
+//                        .userNo(userNo)
+//                        .accessRight(AccessRight.READ)
+//                        .build()
+//        );
+//
+//        groupNos.forEach(groupNo -> {
+//            Optional<UserGroup> optional = userGroupRepository.findById(groupNo);
+//            if(!optional.isPresent()) {
+//                log.error("addIfNotExist {} {}", userNo, groupNo);
+//            } else {
+//                UserGroup userGroup = optional.get();
+//
+//                userGroup.permissions.add(permission);
+//
+//                userGroupList.add(userGroup);
+//            }
+//        });
+//
+//        userGroupRepository.saveAll(userGroupList);
+//    }
 
-        Permission permission = permissionService.createIfNotExist(
-                Permission.builder()
-                        .userNo(userNo)
-                        .accessRight(AccessRight.READ)
-                        .build()
-        );
-
-        groupNos.forEach(groupNo -> {
-            Optional<UserGroup> optional = userGroupRepository.findById(groupNo);
-            if(!optional.isPresent()) {
-                log.error("addIfNotExist {} {}", userNo, groupNo);
-            } else {
-                UserGroup userGroup = optional.get();
-
-                userGroup.permissions.add(permission);
-
-                userGroupList.add(userGroup);
-            }
+    public List<Permission> addUserPermissionList(List<PermissionDto.User> userPermissions) {
+        List<Permission> permissionList = new ArrayList<>();
+        userPermissions.forEach(user -> {
+            permissionList.add(
+                    Permission.builder()
+                            .userNo(user.userNo)
+                            .accessRight(user.accessRight)
+                            .build()
+            );
         });
 
-        userGroupRepository.saveAll(userGroupList);
+        return permissionService.addListIfNotExist(permissionList);
     }
 }

@@ -1,6 +1,7 @@
 package com.page.server.controller;
 
 import com.page.server.dto.GroupDto;
+import com.page.server.dto.PermissionDto;
 import com.page.server.entity.User;
 import com.page.server.entity.UserGroup;
 import com.page.server.service.UserGroupService;
@@ -35,6 +36,13 @@ public class UserGroupController {
     ResponseEntity<GroupDto> getUserGroup(@AuthenticationPrincipal User user, @PathVariable Long groupNo) {
         return ResponseEntity.ok(
                 userGroupService.getUserGroup(user, groupNo)
+        );
+    }
+
+    @PutMapping(value = "/{groupNo}/users")
+    ResponseEntity<UserGroup> addUserList(@AuthenticationPrincipal User user, @PathVariable Long groupNo, @RequestBody List<PermissionDto.User> userPermissions) {
+        return ResponseEntity.ok(
+                userGroupService.updateUserGroupPermissions(user, groupNo, userPermissions)
         );
     }
 

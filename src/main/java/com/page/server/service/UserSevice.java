@@ -1,5 +1,6 @@
 package com.page.server.service;
 
+import com.page.server.dao.UserDao;
 import com.page.server.dto.SignDto;
 import com.page.server.dto.UserDto;
 import com.page.server.entity.Role;
@@ -75,13 +76,13 @@ public class UserSevice {
                 .orElseThrow(() -> new IllegalArgumentException("Can't find account."));
     }
 
-    public List<User> getAllUserList(User user) {
-        if (user.isAdmin()) {
-            return userRepository.findAll();
-        }
+    public List<UserDao> getAllUserDaoList() {
+        return userRepository.findAllUserDaoList();
+    }
 
-//        return userRepository.findAllByGroupNo(user.groupNo);
-        return  null;
+
+    public List<User> getAllUserList() {
+        return userRepository.findAll();
     }
 
     public UserDto.Response convertUser(User user) {

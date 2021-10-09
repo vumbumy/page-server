@@ -1,6 +1,7 @@
 package com.page.server.controller;
 
 import com.page.server.config.JwtTokenProvider;
+import com.page.server.dao.UserDao;
 import com.page.server.dto.SignDto;
 import com.page.server.dto.UserDto;
 import com.page.server.entity.User;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.security.sasl.AuthenticationException;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,6 +84,13 @@ public class AuthController {
     ResponseEntity<UserDto.Response> getMe(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
                 userSevice.convertUser(user)
+        );
+    }
+
+    @GetMapping("/secured/users")
+    public ResponseEntity<List<UserDao>> getUserList() {
+        return ResponseEntity.ok(
+                userSevice.getAllUserDaoList()
         );
     }
 }

@@ -34,10 +34,31 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
                     "    ug.group_no AS groupNo\n" +
                     "FROM\n" +
                     "    _user_group AS ug\n" +
+                    "    LEFT JOIN _user_group_permissions AS ugp ON ug.group_no = ugp.group_no\n" +
+                    "WHERE\n" +
+                    "    ugp.permission_no IN (?1)"
+    )
+    List<UserGroupDao> findUserGroupNoListByPermissionNos(List<Long> permissionNos);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT\n" +
+                    "    ug.group_no AS groupNo\n" +
+                    "FROM\n" +
+                    "    _user_group AS ug\n"
+    )
+    List<UserGroupDao> findAllUserGroupNoList();
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT\n" +
+                    "    ug.group_no AS groupNo\n" +
+                    "FROM\n" +
+                    "    _user_group AS ug\n" +
                     "    LEFT JOIN _user_group_permissions AS ugp ON ugp.group_no = ug.group_no\n" +
                     "    LEFT JOIN _permission AS pm ON ugp.permission_no = pm.permission_no\n" +
                     "WHERE\n" +
-                    "    pm.user_no = 1;"
+                    "    pm.user_no = ?1;"
     )
     List<UserGroupDao> findUserGroupNoListByUserNo(Long userNo);
 }

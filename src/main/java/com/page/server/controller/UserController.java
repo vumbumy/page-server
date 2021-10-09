@@ -5,7 +5,6 @@ import com.page.server.entity.User;
 import com.page.server.service.UserSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +16,9 @@ public class UserController {
     private final UserSevice userSevice;
 
     @GetMapping(value = "")
-    ResponseEntity<List<User>> getUserList(@AuthenticationPrincipal User user) {
+    ResponseEntity<List<User>> getUserList() {
         return ResponseEntity.ok(
-                userSevice.getAllUserList(user)
+                userSevice.getAllUserList()
         );
     }
 

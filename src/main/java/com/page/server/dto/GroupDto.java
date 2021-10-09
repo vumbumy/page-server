@@ -9,9 +9,9 @@ import java.util.List;
 public class GroupDto {
     public String groupName;
 
-    public static class Request extends GroupDto{
-        public List<Permission> permissions;
-    }
+//    public static class User extends GroupDto{
+//        public List<PermissionDto.User> userList;
+//    }
 
     public static class Response extends GroupDto{
         public List<PermissionDto.User> userList;
