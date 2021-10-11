@@ -20,12 +20,16 @@ import java.util.List;
 public class TicketController {
     private final TicketService ticketService;
 
-    @GetMapping("")
-    public ResponseEntity<List<TicketDto.Response>> getTickets(@AuthenticationPrincipal User user, @RequestParam(required = false) Long projectNo, @RequestParam(required = false) Ticket.Status status) {
-        return ResponseEntity.ok(
-                ticketService.getTicketListByUser(user, projectNo, status)
-        );
-    }
+//    @GetMapping("")
+//    public ResponseEntity<List<TicketDto.Response>> getTickets(
+//            @AuthenticationPrincipal User user,
+//            @RequestParam(required = false) Long projectNo,
+//            @RequestParam(required = false) Ticket.Status status
+//    ) {
+//        return ResponseEntity.ok(
+//                ticketService.getTicketListByUser(user, projectNo, status)
+//        );
+//    }
 
     @PostMapping("")
     public ResponseEntity<TicketDto.Response> createTicket(@AuthenticationPrincipal User user, @RequestBody TicketDto.Request request) {

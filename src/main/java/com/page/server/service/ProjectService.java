@@ -25,20 +25,22 @@ public class ProjectService {
     private final PermissionService permissionService;
     private final TypeService typeService;
 
+//    private final UserGroupService userGroupService;
+
 //    public List<ProjectDao> getPublicProjectList() {
 //        return projectRepository.findAllReadable();
 //    }
 
-    public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writable) {
-        return ProjectDto.Response.builder()
-                .projectNo(projectDao.getProjectNo())
-                .projectName(projectDao.getProjectName())
-                .managerName(projectDao.getManagerName())
-                .createdAt(projectDao.getCreatedAt())
-                .ticketCount(projectDao.getTicketCount())
-                .writable(writable)
-                .build();
-    }
+//    public ProjectDto.Response toResponse(ProjectDao projectDao, Boolean writable) {
+//        return ProjectDto.Response.builder()
+//                .projectNo(projectDao.getProjectNo())
+//                .projectName(projectDao.getProjectName())
+//                .managerName(projectDao.getManagerName())
+//                .createdAt(projectDao.getCreatedAt())
+//                .ticketCount(projectDao.getTicketCount())
+//                .writable(writable)
+//                .build();
+//    }
 
     public List<ProjectDto.Response> getProjectListByUser(User user) {
        List<ProjectDto.Response> dtoList = new ArrayList<>();
@@ -47,7 +49,7 @@ public class ProjectService {
 
             daoList.forEach(
                     projectDao -> dtoList.add(
-                            toResponse(projectDao, Boolean.TRUE)
+                            projectConvert.toResponse(projectDao, Boolean.TRUE)
                     )
             );
         } else {
@@ -64,7 +66,7 @@ public class ProjectService {
                 AccessRight accessRight = accessRightMap.get(projectDao.getProjectNo());
 
                 dtoList.add(
-                        toResponse(
+                        projectConvert.toResponse(
                                 projectDao,
                                 accessRight != null && accessRight.equals(AccessRight.WRITE)
                         )
@@ -77,19 +79,12 @@ public class ProjectService {
 
 
     public ProjectDto.Detail getProjectByUser(User user, Long projectNo) {
-        Project project = projectRepository.findById(projectNo).orElse(null);
-        if (project == null) {
-            return null;
-        }
+        Project project = projectRepository.findById(projectNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found project."));
 
-        if (!user.isAdmin() && !project.isReadable(user.userNo, null)) {
-            return null;
-        }
+        Boolean writable = permissionService.hasPermission(user, project);
 
-        return projectConvert.to(
-                project,
-                user.isAdmin() || project.isWritable(user.userNo, null)
-        );
+        return projectConvert.to(project, writable);
     }
 
     @Transactional
@@ -109,15 +104,12 @@ public class ProjectService {
         );
     };
 
+    @Transactional
     public void updateProject(User user, ProjectDto.Request request) {
-        Project project = projectRepository.findById(request.projectNo).orElse(null);
-        if (project == null) {
-            throw new IllegalArgumentException("Not found project.");
-        }
+        Project project = projectRepository.findById(request.projectNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found project."));
 
-        if(!user.isAdmin() && !project.isWritable(user.userNo, null)) {
-            throw new RuntimeException("You don't have permission.");
-        }
+        permissionService.checkPermission(user, project);
 
         project.contentName = request.projectName;
         project.startedAt = request.startedAt;
@@ -144,30 +136,24 @@ public class ProjectService {
 //        projectRepository.save(project);
 //    };
 
+    @Transactional
     public void deleteProject(User user, Long projectNo) {
-        Project project = projectRepository.findById(projectNo).orElse(null);
-        if (project == null) {
-            throw new IllegalArgumentException("Not found project.");
-        }
+        Project project = projectRepository.findById(projectNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found project."));
 
-        if(!user.isAdmin() && !project.isWritable(user.userNo, null)) {
-            throw new RuntimeException("Not found project.");
-        }
+        permissionService.checkPermission(user, project);
 
         project.deleted = true;
 
         projectRepository.save(project);
     }
 
+    @Transactional
     public void updatePermissions(User user, Long projectNo, List<Permission> permissions) {
-        Project project = projectRepository.findById(projectNo).orElse(null);
-        if (project == null) {
-            throw new IllegalArgumentException("Not found project.");
-        }
+        Project project = projectRepository.findById(projectNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found project."));
 
-        if(!user.isAdmin() && !project.isWritable(user.userNo, null)) {
-            throw new RuntimeException("You don't have permission.");
-        }
+        permissionService.checkPermission(user, project);
 
         project.permissions = permissionService.addListIfNotExist(permissions);
 

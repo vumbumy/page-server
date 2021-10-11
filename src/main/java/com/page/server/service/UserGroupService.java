@@ -2,7 +2,6 @@ package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
-import com.page.server.dao.UserGroupDao;
 import com.page.server.dto.GroupDto;
 import com.page.server.dto.PermissionDto;
 import com.page.server.entity.Permission;
@@ -10,8 +9,7 @@ import com.page.server.entity.User;
 import com.page.server.entity.UserGroup;
 import com.page.server.repository.UserGroupRepository;
 import com.page.server.repository.UserRepository;
-import com.page.server.support.GroupConvert;
-import com.page.server.support.UserConvert;
+import com.page.server.support.UserGroupConvert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,7 +30,7 @@ public class UserGroupService {
 
     private final UserRepository userRepository;
 
-    private final GroupConvert groupConvert;
+    private final UserGroupConvert userGroupConvert;
 
 //    public List<UserGroup> getAllUserGroupList() {
 //        return userGroupRepository.findAll();
@@ -49,24 +46,6 @@ public class UserGroupService {
                 permissionList.stream().map(PermissionDao.No::getPermissionNo)
                         .collect(Collectors.toList())
         );
-    }
-
-    public List<Long> getUserGroupNoListByUser(User user) {
-        List<UserGroupDao> daoList;
-
-        if (user.isAdmin()) {
-            daoList = userGroupRepository.findAllUserGroupNoList();
-        } else {
-            List<PermissionDao.No> permissionList = permissionService.getPermissionListByUserNo(user.userNo);
-
-            daoList = userGroupRepository.findUserGroupNoListByPermissionNos(
-                    permissionList.stream().map(PermissionDao.No::getPermissionNo)
-                            .collect(Collectors.toList())
-            );
-        }
-
-        return daoList.stream().map(UserGroupDao::getGroupNo)
-                .collect(Collectors.toList());
     }
 
     public UserGroup addUserGroup(User user, UserGroup userGroup) {
@@ -118,7 +97,7 @@ public class UserGroupService {
             );
         });
 
-        return groupConvert.toResponse(userGroup, userDtoList);
+        return userGroupConvert.toResponse(userGroup, userDtoList);
     }
 
     @Transactional

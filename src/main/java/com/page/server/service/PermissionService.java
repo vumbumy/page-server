@@ -2,23 +2,31 @@ package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
+import com.page.server.dao.UserGroupDao;
 import com.page.server.entity.Permission;
 import com.page.server.entity.User;
+import com.page.server.entity.base.BaseContent;
 import com.page.server.repository.PermissionRepository;
+import com.page.server.repository.UserGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PermissionService {
     private final PermissionRepository permissionRepository;
 
+    private final UserGroupRepository userGroupRepository;
+
     public List<PermissionDao.Content> getPermissionDaoListByUserNo(Long userNo) {
-        return permissionRepository.findPermissionDaoListByUserNo(userNo);
+        List<Long> groupNoList = this.getUserGroupNoListByUserNo(userNo);
+
+        return permissionRepository.findPermissionDaoListByUserNo(userNo, groupNoList);
     }
 
     public List<Long> getPublicContentNoList() {
@@ -54,5 +62,64 @@ public class PermissionService {
         }
 
         return permissionList;
+    }
+
+    public List<Long> getUserGroupNoListByUserNo(Long userNo) {
+        List<UserGroupDao> daoList;
+
+//        if (user.isAdmin()) {
+//            daoList = userGroupRepository.findAllUserGroupNoList();
+//        } else {
+        List<PermissionDao.No> permissionList = this.getPermissionListByUserNo(userNo);
+
+        daoList = userGroupRepository.findUserGroupNoListByPermissionNos(
+                permissionList.stream().map(PermissionDao.No::getPermissionNo)
+                        .collect(Collectors.toList())
+        );
+//        }
+
+        return daoList.stream().map(UserGroupDao::getGroupNo)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> getUserGroupNoListByUser(User user) {
+        return this.getUserGroupNoListByUserNo(user.userNo);
+    }
+
+    public Boolean hasPermission(User user, BaseContent baseContent) {
+        boolean readable;
+        boolean writable;
+        if (user.isAdmin()) {
+            readable = true;
+            writable = true;
+        } else {
+            List<Long> groupNoList = this.getUserGroupNoListByUser(user);
+
+            readable = baseContent.isReadable(null, null) ||
+                    baseContent.isReadable(user.userNo, groupNoList);
+
+            writable = baseContent.isWritable(user.userNo, groupNoList);;
+        }
+
+        if (!readable && !writable) {
+            throw new RuntimeException("You don't have permission.");
+        }
+
+        return writable;
+    }
+
+    public void checkPermission(User user, BaseContent baseContent) {
+        boolean writable;
+        if (user.isAdmin()) {
+            writable = true;
+        } else {
+            List<Long> groupNoList = this.getUserGroupNoListByUser(user);
+
+            writable = baseContent.isWritable(user.userNo, groupNoList);;
+        }
+
+        if (!writable) {
+            throw new RuntimeException("You don't have permission.");
+        }
     }
 }

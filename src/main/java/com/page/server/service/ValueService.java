@@ -29,11 +29,11 @@ public class ValueService {
     public void add(Long contentNo, Map<Long, String> values){
         List<Value> valueList = new ArrayList<>();
 
-        values.forEach((typeNo, value) -> {
+        values.forEach((typeNo, dataValue) -> {
             valueList.add(Value.builder()
                     .contentNo(contentNo)
                     .typeNo(typeNo)
-                    .dataValue(value)
+                    .dataValue(dataValue)
                     .build()
             );
         });
@@ -43,10 +43,25 @@ public class ValueService {
 
     public void put(Long contentNo, Map<Long, String> values){
         Map<Long, Value> valueMap = valueRepository.findAllByContentNo(contentNo).stream()
-                .collect(Collectors.toMap(value -> value.valueNo, value -> value));
+                .collect(Collectors.toMap(value -> value.typeNo, value -> value));
 
         values.forEach(
-                (valueNo, dataValue) -> valueMap.get(valueNo).dataValue = dataValue
+                (typeNo, dataValue) -> {
+                    Value value;
+                    if (valueMap.containsKey(typeNo)) {
+                        value = valueMap.get(typeNo);
+
+                        value.typeNo = typeNo;
+                        value.dataValue = dataValue;
+                    } else {
+                        value = Value.builder()
+                                .contentNo(contentNo)
+                                .typeNo(typeNo)
+                                .dataValue(dataValue)
+                                .build();
+                    }
+                    valueMap.put(typeNo, value);
+                }
         );
 
         valueRepository.saveAll(valueMap.values());

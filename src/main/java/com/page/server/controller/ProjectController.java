@@ -1,9 +1,12 @@
 package com.page.server.controller;
 
 import com.page.server.dto.ProjectDto;
+import com.page.server.dto.TicketDto;
 import com.page.server.entity.Permission;
+import com.page.server.entity.Ticket;
 import com.page.server.entity.User;
 import com.page.server.service.ProjectService;
+import com.page.server.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import java.util.List;
 @RequestMapping("/secured/projects")
 public class ProjectController {
     private final ProjectService projectService;
+    private final TicketService ticketService;
 
     @GetMapping("")
     public ResponseEntity<List<ProjectDto.Response>> getProjects(@AuthenticationPrincipal User user) {
@@ -37,6 +41,13 @@ public class ProjectController {
     public ResponseEntity<ProjectDto.Detail> getProject(@AuthenticationPrincipal User user, @PathVariable Long projectNo) {
         return ResponseEntity.ok(
                 projectService.getProjectByUser(user, projectNo)
+        );
+    }
+
+    @GetMapping("/{projectNo}/tickets")
+    public ResponseEntity<List<TicketDto.Response>> getProjectTickets(@AuthenticationPrincipal User user, @PathVariable Long projectNo, @RequestParam(required = false) Ticket.Status status) {
+        return ResponseEntity.ok(
+                ticketService.getTicketListByUser(user, projectNo, status)
         );
     }
 

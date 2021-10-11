@@ -2,11 +2,13 @@ package com.page.server.controller;
 
 import com.page.server.dao.ProjectDao;
 import com.page.server.dao.TicketDao;
+import com.page.server.dao.UserDao;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.Type;
 import com.page.server.repository.TypeRepository;
 import com.page.server.service.ProjectService;
 import com.page.server.service.TicketService;
+import com.page.server.service.UserSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class PublicController {
+    private final UserSevice userSevice;
+
     private final TicketService ticketService;
     private final ProjectService projectService;
 
@@ -32,7 +36,7 @@ public class PublicController {
 //    }
 
     @GetMapping("/tickets")
-    public ResponseEntity<List<TicketDao>> getTickets(@RequestParam(required = false) Long projectNo) {
+    public ResponseEntity<List<TicketDao>> getTicketList(@RequestParam(required = false) Long projectNo) {
         return ResponseEntity.ok(
                 ticketService.getPublicTicketList(projectNo)
         );

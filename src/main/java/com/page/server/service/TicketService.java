@@ -5,10 +5,10 @@ import com.page.server.dao.PermissionDao;
 import com.page.server.dao.TicketDao;
 import com.page.server.dao.ValueDao;
 import com.page.server.dto.TicketDto;
-import com.page.server.entity.*;
+import com.page.server.entity.Permission;
+import com.page.server.entity.Ticket;
+import com.page.server.entity.User;
 import com.page.server.repository.TicketRepository;
-import com.page.server.repository.TypeRepository;
-import com.page.server.repository.ValueRepository;
 import com.page.server.support.TicketConvert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class TicketService {
     private final TicketConvert ticketConvert;
 
     private final PermissionService permissionService;
-    private final UserGroupService userGroupService;
+//    private final UserGroupService userGroupService;
 
     private final ValueService valueService;
 
@@ -39,7 +39,7 @@ public class TicketService {
                 .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
         if (!ticket.isReadable(null, null)) {
-            throw new RuntimeException("Ticket is not shared.");
+            throw new RuntimeException("Not shared.");
         }
 
         return ticketConvert.toResponse(
@@ -95,24 +95,11 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(ticketNo)
                 .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
-        boolean writable = false;
-        if (user != null) {
-            if (!user.isAdmin() && !ticket.isReadable(user.userNo, null)) {
-                throw new RuntimeException("You don't have permission.");
-            }
+        Boolean writable = permissionService.hasPermission(user, ticket);
 
-            writable = user.isAdmin() || ticket.isWritable(user.userNo, null);;
-        } else {
-            if (!ticket.isReadable(null, null)) {
-                throw new RuntimeException("You don't have permission.");
-            }
-        }
+        List<ValueDao> values = valueService.getTicketValues(ticket);
 
-        return ticketConvert.toDetail(
-                ticket,
-                writable,
-                valueService.getTicketValues(ticket)
-        );
+        return ticketConvert.toDetail(ticket, writable, values);
     }
 
     @Transactional
@@ -142,14 +129,10 @@ public class TicketService {
 
     @Transactional
     public void updateTicket(User user, TicketDto.Request request) {
-        Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
-        if (ticket == null) {
-            throw new IllegalArgumentException("Not found ticket.");
-        }
+        Ticket ticket = ticketRepository.findById(request.ticketNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
-            throw new RuntimeException("You don't have permission.");
-        }
+        permissionService.checkPermission(user, ticket);
 
         ticket.contentName = request.ticketName;
         ticket.status = request.status;
@@ -162,32 +145,21 @@ public class TicketService {
     };
 
     public void updateTicketStatus(User user, TicketDto request) {
-        Ticket ticket = ticketRepository.findById(request.ticketNo).orElse(null);
-        if (ticket == null) {
-            throw new IllegalArgumentException("Not found ticket.");
-        }
+        Ticket ticket = ticketRepository.findById(request.ticketNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
-
-
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
-            throw new RuntimeException("You don't have permission.");
-        }
+        permissionService.checkPermission(user, ticket);
 
         ticket.status = request.status;
-//        ticket.readable = request.readable;
 
         ticketRepository.save(ticket);
     };
 
     public void deleteTicket(User user, Long ticketNo) {
-        Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
-        if (ticket == null) {
-            throw new IllegalArgumentException("Not found ticket.");
-        }
+        Ticket ticket = ticketRepository.findById(ticketNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
-            throw new RuntimeException("Not found ticket.");
-        }
+        permissionService.checkPermission(user, ticket);
 
         ticket.deleted = true;
 
@@ -195,14 +167,10 @@ public class TicketService {
     }
 
     public void updatePermissions(User user, Long ticketNo, List<Permission> permissions) {
-        Ticket ticket = ticketRepository.findById(ticketNo).orElse(null);
-        if (ticket == null) {
-            throw new IllegalArgumentException("Not found ticket.");
-        }
+        Ticket ticket = ticketRepository.findById(ticketNo)
+                .orElseThrow(() -> new IllegalArgumentException("Not found ticket."));
 
-        if(!user.isAdmin() && !ticket.isWritable(user.userNo, null)) {
-            throw new RuntimeException("You don't have permission.");
-        }
+        permissionService.checkPermission(user, ticket);
 
         ticket.permissions = permissionService.addListIfNotExist(permissions);
 
