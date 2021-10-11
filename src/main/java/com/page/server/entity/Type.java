@@ -14,7 +14,7 @@ public class Type implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public enum DataType {
-        Text, TextArea, Number, Datetime, Date, URL
+        Text, TextArea, Number, Date, URL
     }
 
     @Id
