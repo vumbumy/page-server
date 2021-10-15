@@ -2,18 +2,22 @@ package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
+import com.page.server.dao.UserDao;
 import com.page.server.dao.UserGroupDao;
+import com.page.server.dto.PermissionDto;
 import com.page.server.entity.Permission;
 import com.page.server.entity.User;
 import com.page.server.entity.base.BaseContent;
 import com.page.server.repository.PermissionRepository;
 import com.page.server.repository.UserGroupRepository;
+import com.page.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 public class PermissionService {
     private final PermissionRepository permissionRepository;
 
+    private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
 
     public List<PermissionDao.Content> getPermissionDaoListByUserNo(Long userNo) {
@@ -121,5 +126,36 @@ public class PermissionService {
         if (!writable) {
             throw new RuntimeException("You don't have permission.");
         }
+    }
+
+    public List<PermissionDto.User> getPermissionDtoListByPermissions(List<Permission> permissions) {
+        List<UserDao> userDaoList = userRepository.findAllByUserNoIn(
+                permissions.stream()
+                        .map(permission -> permission.userNo)
+                        .collect(Collectors.toList())
+        );
+
+        Map<Long, String> userMap = userDaoList.stream()
+                .collect(Collectors.toMap(
+                        UserDao::getUserNo,
+                        UserDao::getEmail
+                ));
+
+        List<PermissionDto.User> userDtoList = new ArrayList<>();
+        permissions.forEach(permission -> {
+            if (permission.userNo == null) return;
+
+            String userEmail = userMap.get(permission.userNo);
+
+            userDtoList.add(
+                    PermissionDto.User.builder()
+                            .userNo(permission.userNo)
+                            .email(userEmail)
+                            .accessRight(permission.accessRight)
+                            .build()
+            );
+        });
+
+        return userDtoList;
     }
 }

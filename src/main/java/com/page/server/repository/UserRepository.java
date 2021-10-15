@@ -32,5 +32,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     )
     List<UserDao> findAllUserDaoList();
 
-    List<User> findAllByUserNoIn(List<Long> userNoList);
+    @Query(
+            nativeQuery = true,
+            value = "SELECT\n" +
+                    "    user_no AS userNo,\n" +
+                    "    email AS email\n" +
+                    "FROM\n" +
+                    "    _user\n" +
+                    "WHERE\n" +
+                    "    _user.user_no in (?1)\n"
+    )
+    List<UserDao> findAllByUserNoIn(List<Long> userNoList);
 }

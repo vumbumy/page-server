@@ -15,5 +15,6 @@ public class GroupDto {
 
     public static class Response extends GroupDto{
         public List<PermissionDto.User> userList;
+        public List<PermissionDto.Group> groupList;
     }
 }

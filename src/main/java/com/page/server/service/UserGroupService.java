@@ -2,6 +2,7 @@ package com.page.server.service;
 
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
+import com.page.server.dao.UserDao;
 import com.page.server.dto.GroupDto;
 import com.page.server.dto.PermissionDto;
 import com.page.server.entity.Permission;
@@ -27,8 +28,6 @@ import java.util.stream.Collectors;
 public class UserGroupService {
     private final UserGroupRepository userGroupRepository;
     private final PermissionService permissionService;
-
-    private final UserRepository userRepository;
 
     private final UserGroupConvert userGroupConvert;
 
@@ -73,31 +72,10 @@ public class UserGroupService {
             throw new RuntimeException("You don't have permission.");
         }
 
-        List<User> userList = userRepository.findAllByUserNoIn(
-                userGroup.permissions.stream()
-                        .map(permission -> permission.userNo)
-                        .collect(Collectors.toList())
+        return userGroupConvert.toResponse(
+                userGroup,
+                permissionService.getPermissionDtoListByPermissions(userGroup.permissions)
         );
-
-        Map<Long, User> userMap = userList.stream()
-                .collect(Collectors.toMap(u -> u.userNo, u -> u));
-
-        List<PermissionDto.User> userDtoList = new ArrayList<>();
-        userGroup.permissions.forEach(permission -> {
-            if (permission.userNo == null) return;
-
-            User u = userMap.get(permission.userNo);
-
-            userDtoList.add(
-                    PermissionDto.User.builder()
-                            .userNo(u.userNo)
-                            .email(u.email)
-                            .accessRight(permission.accessRight)
-                            .build()
-            );
-        });
-
-        return userGroupConvert.toResponse(userGroup, userDtoList);
     }
 
     @Transactional

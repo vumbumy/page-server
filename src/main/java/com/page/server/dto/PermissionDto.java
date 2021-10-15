@@ -21,4 +21,16 @@ public class PermissionDto {
             this.email = email;
         }
     }
+
+    public static class Group extends PermissionDto {
+        public Long groupNo;
+        public String groupName;
+
+        @Builder
+        public Group(AccessRight accessRight, Long groupNo, String groupName) {
+            super(accessRight);
+            this.groupNo = groupNo;
+            this.groupName = groupName;
+        }
+    }
 }

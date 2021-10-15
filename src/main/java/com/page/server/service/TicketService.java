@@ -26,7 +26,7 @@ public class TicketService {
     private final TicketConvert ticketConvert;
 
     private final PermissionService permissionService;
-//    private final UserGroupService userGroupService;
+    private final UserGroupService userGroupService;
 
     private final ValueService valueService;
 
@@ -99,7 +99,13 @@ public class TicketService {
 
         List<ValueDao> values = valueService.getTicketValues(ticket);
 
-        return ticketConvert.toDetail(ticket, writable, values);
+        return ticketConvert.toDetail(
+                ticket,
+                writable,
+                values,
+                permissionService.getPermissionDtoListByPermissions(ticket.permissions),
+                null
+        );
     }
 
     @Transactional

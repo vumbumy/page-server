@@ -1,6 +1,7 @@
 package com.page.server.support;
 
 import com.page.server.dao.ValueDao;
+import com.page.server.dto.PermissionDto;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.Ticket;
 import org.mapstruct.Mapper;
@@ -21,7 +22,7 @@ public interface TicketConvert {
 
     @Mapping(source = "ticket.contentNo", target = "ticketNo")
     @Mapping(source = "ticket.contentName", target = "ticketName")
-    TicketDto.Detail toDetail(Ticket ticket, Boolean writable, List<ValueDao> values);
+    TicketDto.Detail toDetail(Ticket ticket, Boolean writable, List<ValueDao> values, List<PermissionDto.User> userPermissions, List<PermissionDto.Group> groupPermissions);
 
     @Mapping(source = "ticketNo", target = "contentNo")
     @Mapping(source = "ticketName", target = "contentName")

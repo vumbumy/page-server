@@ -1,8 +1,10 @@
 package com.page.server.service;
 
 import com.page.server.dao.UserDao;
+import com.page.server.dto.PermissionDto;
 import com.page.server.dto.SignDto;
 import com.page.server.dto.UserDto;
+import com.page.server.entity.Permission;
 import com.page.server.entity.Role;
 import com.page.server.entity.User;
 import com.page.server.repository.RoleRepository;
@@ -15,6 +17,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,13 +90,6 @@ public class UserSevice {
     }
 
     public UserDto.Response convertUser(User user) {
-        UserDto.Response userInfo = userConvert.toResponse(user);
-
-//        if (user.groupNo != null) {
-//            userGroupRepository.findById(user.groupNo)
-//                    .ifPresent(userGroup -> userInfo.groupName = userGroup.groupName);
-//        }
-
-        return userInfo;
+        return userConvert.toResponse(user);
     }
 }

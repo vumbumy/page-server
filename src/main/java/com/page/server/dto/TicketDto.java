@@ -17,15 +17,17 @@ public class TicketDto {
 
     public static class Detail extends TicketDto{
         public List<ValueDao> values;
-        public List<Permission> permissions;
+        public List<PermissionDto.User> userPermissions;
+        public List<PermissionDto.Group> groupPermissions;
 
         public Boolean writable;
 
         @Builder
-        public Detail(Long ticketNo, String ticketName, Ticket.Status status, List<ValueDao> values, List<Permission> permissions, Boolean writable) {
+        public Detail(Long ticketNo, String ticketName, Ticket.Status status, List<ValueDao> values, List<PermissionDto.User> userPermissions, List<PermissionDto.Group> groupPermissions, Boolean writable) {
             super(ticketNo, ticketName, status);
             this.values = values;
-            this.permissions = permissions;
+            this.userPermissions = userPermissions;
+            this.groupPermissions = groupPermissions;
             this.writable = writable;
         }
     }

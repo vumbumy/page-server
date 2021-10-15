@@ -15,12 +15,14 @@ public class UserDto {
     public List<String> roles;
 
     public static class Response extends UserDto{
+        public Long userNo;
         public String groupName;
         public LocalDateTime createdAt;
 
         @Builder
-        public Response(String email, String phoneNumber, List<String> roles, String groupName, LocalDateTime createdAt) {
+        public Response(String email, String phoneNumber, List<String> roles, Long userNo, String groupName, LocalDateTime createdAt) {
             super(email, phoneNumber, roles);
+            this.userNo = userNo;
             this.groupName = groupName;
             this.createdAt = createdAt;
         }
