@@ -86,11 +86,4 @@ public class AuthController {
                 userSevice.convertUser(user)
         );
     }
-
-    @GetMapping("/secured/users")
-    public ResponseEntity<List<UserDao>> getUserList() {
-        return ResponseEntity.ok(
-                userSevice.getAllUserDaoList()
-        );
-    }
 }

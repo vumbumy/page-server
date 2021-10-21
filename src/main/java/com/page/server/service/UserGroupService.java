@@ -3,6 +3,7 @@ package com.page.server.service;
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
 import com.page.server.dao.UserDao;
+import com.page.server.dao.UserGroupDao;
 import com.page.server.dto.GroupDto;
 import com.page.server.dto.PermissionDto;
 import com.page.server.entity.Permission;
@@ -31,9 +32,9 @@ public class UserGroupService {
 
     private final UserGroupConvert userGroupConvert;
 
-//    public List<UserGroup> getAllUserGroupList() {
-//        return userGroupRepository.findAll();
-//    }
+    public List<UserGroupDao> getAllUserGroupList() {
+        return userGroupRepository.findAllUserGroupDaoList();
+    }
 
     public List<UserGroup> getUserGroupListByUser(User user) {
         if (user.isAdmin()) {

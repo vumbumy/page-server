@@ -3,11 +3,13 @@ package com.page.server.controller;
 import com.page.server.dao.ProjectDao;
 import com.page.server.dao.TicketDao;
 import com.page.server.dao.UserDao;
+import com.page.server.dao.UserGroupDao;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.Type;
 import com.page.server.repository.TypeRepository;
 import com.page.server.service.ProjectService;
 import com.page.server.service.TicketService;
+import com.page.server.service.UserGroupService;
 import com.page.server.service.UserSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +24,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicController {
     private final UserSevice userSevice;
+    private final UserGroupService userGroupService;
 
     private final TicketService ticketService;
-    private final ProjectService projectService;
 
     private final TypeRepository typeRepository;
+
+//    private final ProjectService projectService;
 
 //    @GetMapping("/projects")
 //    public ResponseEntity<List<ProjectDao>> getProjects() {
@@ -53,6 +57,20 @@ public class PublicController {
     public ResponseEntity<List<Type>> getTypeList() {
         return ResponseEntity.ok(
                 typeRepository.findAllByDeletedFalseOrDeletedIsNull()
+        );
+    }
+
+    @GetMapping("/secured/users")
+    public ResponseEntity<List<UserDao>> getUserList() {
+        return ResponseEntity.ok(
+                userSevice.getAllUserDaoList()
+        );
+    }
+
+    @GetMapping("/secured/groups")
+    public ResponseEntity<List<UserGroupDao>> getGroupList() {
+        return ResponseEntity.ok(
+                userGroupService.getAllUserGroupList()
         );
     }
 }

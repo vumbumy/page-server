@@ -52,6 +52,16 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
     @Query(
             nativeQuery = true,
             value = "SELECT\n" +
+                    "    ug.group_no AS groupNo,\n" +
+                    "    ug.group_name AS groupName\n" +
+                    "FROM\n" +
+                    "    _user_group AS ug\n"
+    )
+    List<UserGroupDao> findAllUserGroupDaoList();
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT\n" +
                     "    ug.group_no AS groupNo\n" +
                     "FROM\n" +
                     "    _user_group AS ug\n" +
