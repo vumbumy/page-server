@@ -1,13 +1,11 @@
 package com.page.server.controller;
 
-import com.page.server.dao.ProjectDao;
 import com.page.server.dao.TicketDao;
 import com.page.server.dao.UserDao;
 import com.page.server.dao.UserGroupDao;
 import com.page.server.dto.TicketDto;
-import com.page.server.entity.Type;
+import com.page.server.entity.data.Type;
 import com.page.server.repository.TypeRepository;
-import com.page.server.service.ProjectService;
 import com.page.server.service.TicketService;
 import com.page.server.service.UserGroupService;
 import com.page.server.service.UserSevice;

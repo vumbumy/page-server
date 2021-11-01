@@ -1,11 +1,10 @@
 package com.page.server.dto;
 
-import com.page.server.entity.Type;
+import com.page.server.entity.data.Type;
 import com.page.server.entity.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 

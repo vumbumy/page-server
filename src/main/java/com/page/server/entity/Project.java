@@ -1,6 +1,7 @@
 package com.page.server.entity;
 
 import com.page.server.entity.base.BaseContent;
+import com.page.server.entity.data.Type;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;

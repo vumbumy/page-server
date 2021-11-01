@@ -1,4 +1,4 @@
-package com.page.server.entity;
+package com.page.server.entity.data;
 
 import lombok.NoArgsConstructor;
 

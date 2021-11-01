@@ -1,6 +1,6 @@
 package com.page.server.repository;
 
-import com.page.server.entity.Type;
+import com.page.server.entity.data.Type;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

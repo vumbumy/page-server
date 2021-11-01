@@ -110,21 +110,15 @@ public class TicketService {
 
     @Transactional
     public TicketDto.Response createTicket(User user, TicketDto.Request request) {
-
-        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
-        if (!user.isAdmin()) {
-            permissions.add(
-                    permissionService.getDefaultPermission(user)
-            );
-        }
-
         Ticket ticket = ticketRepository.save(
                 Ticket.builder()
                         .managerNo(user.userNo)
                         .contentName(request.ticketName)
                         .projectNo(request.projectNo)
                         .status(request.status)
-                        .permissions(permissions)
+                        .permissions(
+                                permissionService.getDefaultPermissionList(user)
+                        )
                         .build()
         );
 

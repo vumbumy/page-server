@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +38,10 @@ public class PermissionService {
 
     public List<PermissionDao.No> getPermissionListByUserNo(Long userNo) {
         return permissionRepository.findPermissionListByUser(userNo);
+    }
+
+    public List<Permission> getDefaultPermissionList(User user) {
+        return Collections.singletonList(this.getDefaultPermission(user));
     }
 
     public Permission getDefaultPermission(User user) {
@@ -115,7 +117,7 @@ public class PermissionService {
 
     public void checkPermission(User user, BaseContent baseContent) {
         boolean writable;
-        if (user.isAdmin()) {
+        if (user.isAdmin()) { // || baseContent.isManager(user.userNo)) {
             writable = true;
         } else {
             List<Long> groupNoList = this.getUserGroupNoListByUser(user);

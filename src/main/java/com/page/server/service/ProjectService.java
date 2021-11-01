@@ -5,6 +5,7 @@ import com.page.server.dao.PermissionDao;
 import com.page.server.dao.ProjectDao;
 import com.page.server.dto.ProjectDto;
 import com.page.server.entity.*;
+import com.page.server.entity.data.Type;
 import com.page.server.repository.ProjectRepository;
 import com.page.server.support.ProjectConvert;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class ProjectService {
 //    }
 
     public List<ProjectDto.Response> getProjectListByUser(User user) {
-       List<ProjectDto.Response> dtoList = new ArrayList<>();
+        List<ProjectDto.Response> dtoList = new ArrayList<>();
         if (user.isAdmin()) {
             List<ProjectDao> daoList = projectRepository.findProjectDaoAll();
 
@@ -89,13 +90,14 @@ public class ProjectService {
 
     @Transactional
     public ProjectDto.Detail createProject(User user, ProjectDto.Request request) {
-        List<Permission> permissions = permissionService.addListIfNotExist(request.permissions);
         List<Type> types = typeService.addListIfNotExist(request.types);
 
         Project project = Project.builder()
                 .managerNo(user.userNo)
                 .contentName(request.projectName)
-                .permissions(permissions)
+                .permissions(
+                        permissionService.getDefaultPermissionList(user)
+                )
                 .types(types)
                 .build();
 

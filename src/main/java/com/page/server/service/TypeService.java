@@ -1,6 +1,6 @@
 package com.page.server.service;
 
-import com.page.server.entity.Type;
+import com.page.server.entity.data.Type;
 import com.page.server.repository.TypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.page.server.repository;
 
 import com.page.server.dao.ValueDao;
-import com.page.server.entity.Value;
+import com.page.server.entity.data.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

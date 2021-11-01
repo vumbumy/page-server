@@ -2,7 +2,7 @@ package com.page.server.service;
 
 import com.page.server.dao.ValueDao;
 import com.page.server.entity.Ticket;
-import com.page.server.entity.Value;
+import com.page.server.entity.data.Value;
 import com.page.server.repository.TypeRepository;
 import com.page.server.repository.ValueRepository;
 import lombok.RequiredArgsConstructor;
