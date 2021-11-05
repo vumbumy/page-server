@@ -1,5 +1,6 @@
 package com.page.server.controller;
 
+import com.page.server.dto.EventDto;
 import com.page.server.dto.ProjectDto;
 import com.page.server.entity.Event;
 import com.page.server.entity.User;
@@ -34,9 +35,9 @@ public class EventController {
     }
 
     @GetMapping("/kpis")
-    public ResponseEntity<List<Event>> getKPIList(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<EventDto.Result>> getKPIList(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
-                eventService.getEventListByUser(user, Event.Type.KPI)
+                eventService.getKpiResultList(user)
         );
     }
 

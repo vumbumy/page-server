@@ -1,9 +1,6 @@
 package com.page.server.service;
 
-import com.page.server.constant.AccessRight;
-import com.page.server.dao.PermissionDao;
-import com.page.server.dao.ProjectDao;
-import com.page.server.dto.ProjectDto;
+import com.page.server.dto.EventDto;
 import com.page.server.entity.Event;
 import com.page.server.entity.User;
 import com.page.server.repository.EventRepository;
@@ -14,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,7 +40,32 @@ public class EventService {
         }
 
         // TODO: Get event list with checking permissions
+//        else {
+//            List<PermissionDao.Content> pDaoList = permissionService.getPermissionDaoListByUserNo(user.userNo);
+//
+//            Map<Long, AccessRight> accessRightMap = pDaoList.stream()
+//                    .collect(Collectors.toMap(PermissionDao.Content::getContentNo, PermissionDao::getAccessRight));
+//        }
 
         return new ArrayList<>();
+    }
+
+    public List<EventDto.Result> getKpiResultList(User user) {
+        List<Event> eventList = getEventListByUser(user, Event.Type.KPI);
+
+        List<EventDto.Result> resultList = new ArrayList<>();
+
+        eventList.forEach(event -> {
+            resultList.add(
+                    EventDto.Result.builder()
+                            .action(event.action.getName())
+                            .paramJson(event.paramJson)
+                            .createdAt(event.createdAt)
+                            .result("Done")
+                            .build()
+            );
+        });
+
+        return resultList;
     }
 }
