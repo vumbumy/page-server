@@ -19,16 +19,26 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping("/events")
-    public ResponseEntity<Object> createEvent(@AuthenticationPrincipal User user, @RequestBody Event event) {
-        eventService.createEvent(user, event);
+    public ResponseEntity<Event> createEvent(@AuthenticationPrincipal User user, @RequestBody Event event) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(
+                eventService.createEvent(user, event)
+        );
     }
 
     @GetMapping("/schedules")
-    public ResponseEntity<List<Event>> getSchedules(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<Event>> getScheduleList(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
-                eventService.getEventListByUser(user, Event.Status.SCHEDULE)
+                eventService.getEventListByUser(user, Event.Type.SCHEDULE)
         );
     }
+
+    @GetMapping("/kpis")
+    public ResponseEntity<List<Event>> getKPIList(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(
+                eventService.getEventListByUser(user, Event.Type.KPI)
+        );
+    }
+
+
 }

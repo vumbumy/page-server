@@ -12,13 +12,15 @@ import javax.persistence.Table;
 @Table(name = "_EVENT")
 public class Event extends BaseContent {
 
-    public enum Status {
-        DISABLED, SCHEDULE, ACTIVE
+    public enum Type {
+        SCHEDULE, KPI
     }
 
     public Action action;
 
     public String paramJson;
 
-    public Status status;
+    public Type eventType;
+
+    public Boolean enabled;
 }

@@ -46,11 +46,4 @@ public class ConstantController {
                 Action.values()
         );
     }
-
-    @GetMapping("/types/events/status")
-    public ResponseEntity<Event.Status[]> getEventStatus() {
-        return ResponseEntity.ok(
-                Event.Status.values()
-        );
-    }
 }

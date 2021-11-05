@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
-    List<Event> findAllByStatusIs(Event.Status eventStatus);
+    List<Event> findAllByEventTypeAndEnabledIsTrue(Event.Type eventType);
+
+    List<Event> findAllByEventType(Event.Type eventType);
 }

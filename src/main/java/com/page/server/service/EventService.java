@@ -27,21 +27,21 @@ public class EventService {
 
     @Scheduled(cron="${cron.rule}")
     public void eventScheduler() {
-        List<Event> eventList = eventRepository.findAllByStatusIs(Event.Status.SCHEDULE);
+        List<Event> eventList = eventRepository.findAllByEventTypeAndEnabledIsTrue(Event.Type.SCHEDULE);
 
         log.info("Scheduled {}", eventList.size());
     }
 
-    public Object createEvent(User user, Event event) {
+    public Event createEvent(User user, Event event) {
         event.managerNo = user.userNo;
         event.permissions = permissionService.getDefaultPermissionList(user);
 
         return eventRepository.save(event);
     }
 
-    public List<Event> getEventListByUser(User user, Event.Status eventStatus) {
+    public List<Event> getEventListByUser(User user, Event.Type eventType) {
         if (user.isAdmin()) {
-            return eventRepository.findAllByStatusIs(eventStatus);
+            return eventRepository.findAllByEventType(eventType);
         }
 
         // TODO: Get event list with checking permissions
