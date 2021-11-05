@@ -1,7 +1,7 @@
 package com.page.server.entity;
 
 import com.page.server.entity.base.BaseContent;
-import com.page.server.entity.data.Type;
+import com.page.server.entity.data.DataColumn;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
@@ -26,10 +26,10 @@ public class Project extends BaseContent {
             name = "_PROJECT_TYPES",
             joinColumns = @JoinColumn(name = "PROJECT_NO"),
             inverseJoinColumns = @JoinColumn(name = "TYPE_NO"))
-    public List<Type> types;
+    public List<DataColumn> types;
 
     @Builder
-    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean deleted, String description, Long startedAt, Long endedAt, List<Type> types) {
+    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean deleted, String description, Long startedAt, Long endedAt, List<DataColumn> types) {
         super(contentNo, contentName, permissions, managerNo, deleted);
         this.description = description;
         this.startedAt = startedAt;

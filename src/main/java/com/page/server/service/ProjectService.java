@@ -5,7 +5,7 @@ import com.page.server.dao.PermissionDao;
 import com.page.server.dao.ProjectDao;
 import com.page.server.dto.ProjectDto;
 import com.page.server.entity.*;
-import com.page.server.entity.data.Type;
+import com.page.server.entity.data.DataColumn;
 import com.page.server.repository.ProjectRepository;
 import com.page.server.support.ProjectConvert;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +90,7 @@ public class ProjectService {
 
     @Transactional
     public ProjectDto.Detail createProject(User user, ProjectDto.Request request) {
-        List<Type> types = typeService.addListIfNotExist(request.types);
+        List<DataColumn> types = typeService.addListIfNotExist(request.types);
 
         Project project = Project.builder()
                 .managerNo(user.userNo)

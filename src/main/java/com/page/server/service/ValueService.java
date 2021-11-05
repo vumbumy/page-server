@@ -2,7 +2,7 @@ package com.page.server.service;
 
 import com.page.server.dao.ValueDao;
 import com.page.server.entity.Ticket;
-import com.page.server.entity.data.Value;
+import com.page.server.entity.data.DataValue;
 import com.page.server.repository.TypeRepository;
 import com.page.server.repository.ValueRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +27,13 @@ public class ValueService {
     }
 
     public void add(Long contentNo, Map<Long, String> values){
-        List<Value> valueList = new ArrayList<>();
+        List<DataValue> valueList = new ArrayList<>();
 
-        values.forEach((typeNo, dataValue) -> {
-            valueList.add(Value.builder()
+        values.forEach((columnNo, value) -> {
+            valueList.add(DataValue.builder()
                     .contentNo(contentNo)
-                    .typeNo(typeNo)
-                    .dataValue(dataValue)
+                    .columnNo(columnNo)
+                    .value(value)
                     .build()
             );
         });
@@ -42,25 +42,25 @@ public class ValueService {
     }
 
     public void put(Long contentNo, Map<Long, String> values){
-        Map<Long, Value> valueMap = valueRepository.findAllByContentNo(contentNo).stream()
-                .collect(Collectors.toMap(value -> value.typeNo, value -> value));
+        Map<Long, DataValue> valueMap = valueRepository.findAllByContentNo(contentNo).stream()
+                .collect(Collectors.toMap(value -> value.columnNo, value -> value));
 
         values.forEach(
-                (typeNo, dataValue) -> {
-                    Value value;
-                    if (valueMap.containsKey(typeNo)) {
-                        value = valueMap.get(typeNo);
+                (columnNo, value) -> {
+                    DataValue dataValue;
+                    if (valueMap.containsKey(columnNo)) {
+                        dataValue = valueMap.get(columnNo);
 
-                        value.typeNo = typeNo;
-                        value.dataValue = dataValue;
+                        dataValue.columnNo = columnNo;
+                        dataValue.value = value;
                     } else {
-                        value = Value.builder()
+                        dataValue = DataValue.builder()
                                 .contentNo(contentNo)
-                                .typeNo(typeNo)
-                                .dataValue(dataValue)
+                                .columnNo(columnNo)
+                                .value(value)
                                 .build();
                     }
-                    valueMap.put(typeNo, value);
+                    valueMap.put(columnNo, dataValue);
                 }
         );
 

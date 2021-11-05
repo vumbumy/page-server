@@ -4,7 +4,7 @@ import com.page.server.dao.TicketDao;
 import com.page.server.dao.UserDao;
 import com.page.server.dao.UserGroupDao;
 import com.page.server.dto.TicketDto;
-import com.page.server.entity.data.Type;
+import com.page.server.entity.data.DataColumn;
 import com.page.server.repository.TypeRepository;
 import com.page.server.service.TicketService;
 import com.page.server.service.UserGroupService;
@@ -52,7 +52,7 @@ public class PublicController {
     }
 
     @GetMapping("/types")
-    public ResponseEntity<List<Type>> getTypeList() {
+    public ResponseEntity<List<DataColumn>> getTypeList() {
         return ResponseEntity.ok(
                 typeRepository.findAllByDeletedFalseOrDeletedIsNull()
         );

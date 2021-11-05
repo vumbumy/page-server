@@ -3,7 +3,7 @@ package com.page.server.controller;
 import com.page.server.constant.Action;
 import com.page.server.entity.Event;
 import com.page.server.entity.Ticket;
-import com.page.server.entity.data.Type;
+import com.page.server.entity.data.DataColumn;
 import com.page.server.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +34,9 @@ public class ConstantController {
     }
 
     @GetMapping("/types/data-types")
-    public ResponseEntity<Type.DataType[]> getDataTypes() {
+    public ResponseEntity<DataColumn.Type[]> getDataColumnTypes() {
         return ResponseEntity.ok(
-                Type.DataType.values()
+                DataColumn.Type.values()
         );
     }
 

@@ -1,6 +1,6 @@
 package com.page.server.dto;
 
-import com.page.server.entity.data.Type;
+import com.page.server.entity.data.DataColumn;
 import com.page.server.entity.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,13 +37,13 @@ public class ProjectDto {
         public Long endedAt;
 
         public List<Permission> permissions;
-        public List<Type> types;
+        public List<DataColumn> types;
 
         public LocalDateTime createdAt;
         public LocalDateTime updatedAt;
 
         @Builder
-        public Detail(Long projectNo, String projectName, Boolean writable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public Detail(Long projectNo, String projectName, Boolean writable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<DataColumn> types, LocalDateTime createdAt, LocalDateTime updatedAt) {
             super(projectNo, projectName);
             this.writable = writable;
             this.description = description;
@@ -62,10 +62,10 @@ public class ProjectDto {
         public Long endedAt;
 
         public List<Permission> permissions;
-        public List<Type> types;
+        public List<DataColumn> types;
 
         @Builder
-        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<Type> types) {
+        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<DataColumn> types) {
             super(projectNo, projectName);
             this.description = description;
             this.startedAt = startedAt;

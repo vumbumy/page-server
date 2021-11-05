@@ -1,6 +1,6 @@
 package com.page.server.service;
 
-import com.page.server.entity.data.Type;
+import com.page.server.entity.data.DataColumn;
 import com.page.server.repository.TypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,20 +14,20 @@ import java.util.List;
 public class TypeService {
     private final TypeRepository typeRepository;
 
-    public Type createIfNotExist(Type type) {
-        return typeRepository.findTypeByTypeNameAndDataTypeAndRequiredAndDefaultValueAndDeleted(
-                type.typeName.toUpperCase(),
-                type.dataType,
+    public DataColumn createIfNotExist(DataColumn type) {
+        return typeRepository.findTypeByColumnNameAndColumnTypeAndRequiredAndDefaultValueAndDeleted(
+                type.columnName.toUpperCase(),
+                type.columnType,
                 type.required,
                 type.defaultValue,
                 type.deleted
         ).orElseGet(() -> typeRepository.save(type));
     }
 
-    public List<Type> addListIfNotExist(List<Type> types) {
+    public List<DataColumn> addListIfNotExist(List<DataColumn> types) {
         if (CollectionUtils.isEmpty(types)) return new ArrayList<>();
 
-        List<Type> typeList = new ArrayList<>();
+        List<DataColumn> typeList = new ArrayList<>();
         types.forEach(
                 type -> typeList.add(
                         this.createIfNotExist(type)
