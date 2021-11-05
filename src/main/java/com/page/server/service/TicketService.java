@@ -3,7 +3,7 @@ package com.page.server.service;
 import com.page.server.constant.AccessRight;
 import com.page.server.dao.PermissionDao;
 import com.page.server.dao.TicketDao;
-import com.page.server.dao.ValueDao;
+import com.page.server.dao.CellDao;
 import com.page.server.dto.TicketDto;
 import com.page.server.entity.Permission;
 import com.page.server.entity.Ticket;
@@ -97,7 +97,7 @@ public class TicketService {
 
         Boolean writable = permissionService.hasPermission(user, ticket);
 
-        List<ValueDao> values = valueService.getTicketValues(ticket);
+        List<CellDao> values = valueService.getTicketValues(ticket);
 
         return ticketConvert.toDetail(
                 ticket,

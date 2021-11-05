@@ -1,6 +1,6 @@
 package com.page.server.dto;
 
-import com.page.server.dao.ValueDao;
+import com.page.server.dao.CellDao;
 import com.page.server.entity.Permission;
 import com.page.server.entity.Ticket;
 import lombok.AllArgsConstructor;
@@ -16,14 +16,14 @@ public class TicketDto {
     public Ticket.Status status;
 
     public static class Detail extends TicketDto{
-        public List<ValueDao> values;
+        public List<CellDao> values;
         public List<PermissionDto.User> userPermissions;
         public List<PermissionDto.Group> groupPermissions;
 
         public Boolean writable;
 
         @Builder
-        public Detail(Long ticketNo, String ticketName, Ticket.Status status, List<ValueDao> values, List<PermissionDto.User> userPermissions, List<PermissionDto.Group> groupPermissions, Boolean writable) {
+        public Detail(Long ticketNo, String ticketName, Ticket.Status status, List<CellDao> values, List<PermissionDto.User> userPermissions, List<PermissionDto.Group> groupPermissions, Boolean writable) {
             super(ticketNo, ticketName, status);
             this.values = values;
             this.userPermissions = userPermissions;
@@ -33,10 +33,10 @@ public class TicketDto {
     }
 
     public static class Response extends TicketDto{
-        public List<ValueDao> values;
+        public List<CellDao> values;
 
         @Builder
-        public Response(Long ticketNo, String ticketName, Ticket.Status status, List<ValueDao> values) {
+        public Response(Long ticketNo, String ticketName, Ticket.Status status, List<CellDao> values) {
             super(ticketNo, ticketName, status);
             this.values = values;
         }

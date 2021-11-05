@@ -10,13 +10,13 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "_DATA_VALUE")
-public class DataValue extends BaseTimeEntity implements Serializable {
+@Table(name = "_DATA_CELL")
+public class DataCell extends BaseTimeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long valueNo;
+    public Long cellNo;
 
 //    @OneToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "column_no")
@@ -29,13 +29,13 @@ public class DataValue extends BaseTimeEntity implements Serializable {
     @NotNull
     public Long contentNo;
 
-    public String value;
+    public String cellValue;
 
     @Builder
-    public DataValue(Long valueNo, @NotNull Long columnNo, @NotNull Long contentNo, String value) {
-        this.valueNo = valueNo;
+    public DataCell(Long cellNo, @NotNull Long columnNo, @NotNull Long contentNo, String cellValue) {
+        this.cellNo = cellNo;
         this.columnNo = columnNo;
         this.contentNo = contentNo;
-        this.value = value;
+        this.cellValue = cellValue;
     }
 }

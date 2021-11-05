@@ -23,17 +23,17 @@ public class Project extends BaseContent {
     @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(
-            name = "_PROJECT_TYPES",
+            name = "_PROJECT_COLUMNS",
             joinColumns = @JoinColumn(name = "PROJECT_NO"),
-            inverseJoinColumns = @JoinColumn(name = "TYPE_NO"))
-    public List<DataColumn> types;
+            inverseJoinColumns = @JoinColumn(name = "COLUMN_NO"))
+    public List<DataColumn> columns;
 
     @Builder
-    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean deleted, String description, Long startedAt, Long endedAt, List<DataColumn> types) {
+    public Project(Long contentNo, String contentName, List<Permission> permissions, @NotNull Long managerNo, Boolean deleted, String description, Long startedAt, Long endedAt, List<DataColumn> columns) {
         super(contentNo, contentName, permissions, managerNo, deleted);
         this.description = description;
         this.startedAt = startedAt;
         this.endedAt = endedAt;
-        this.types = types;
+        this.columns = columns;
     }
 }

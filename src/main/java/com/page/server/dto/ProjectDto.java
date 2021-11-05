@@ -37,20 +37,20 @@ public class ProjectDto {
         public Long endedAt;
 
         public List<Permission> permissions;
-        public List<DataColumn> types;
+        public List<DataColumn> columns;
 
         public LocalDateTime createdAt;
         public LocalDateTime updatedAt;
 
         @Builder
-        public Detail(Long projectNo, String projectName, Boolean writable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<DataColumn> types, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public Detail(Long projectNo, String projectName, Boolean writable, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<DataColumn> columns, LocalDateTime createdAt, LocalDateTime updatedAt) {
             super(projectNo, projectName);
             this.writable = writable;
             this.description = description;
             this.startedAt = startedAt;
             this.endedAt = endedAt;
             this.permissions = permissions;
-            this.types = types;
+            this.columns = columns;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
         }
@@ -62,16 +62,16 @@ public class ProjectDto {
         public Long endedAt;
 
         public List<Permission> permissions;
-        public List<DataColumn> types;
+        public List<DataColumn> columns;
 
         @Builder
-        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<DataColumn> types) {
+        public Request(Long projectNo, String projectName, String description, Long startedAt, Long endedAt, List<Permission> permissions, List<DataColumn> columns) {
             super(projectNo, projectName);
             this.description = description;
             this.startedAt = startedAt;
             this.endedAt = endedAt;
             this.permissions = permissions;
-            this.types = types;
+            this.columns = columns;
         }
     }
 }

@@ -90,7 +90,7 @@ public class ProjectService {
 
     @Transactional
     public ProjectDto.Detail createProject(User user, ProjectDto.Request request) {
-        List<DataColumn> types = typeService.addListIfNotExist(request.types);
+        List<DataColumn> types = typeService.addListIfNotExist(request.columns);
 
         Project project = Project.builder()
                 .managerNo(user.userNo)
@@ -98,7 +98,7 @@ public class ProjectService {
                 .permissions(
                         permissionService.getDefaultPermissionList(user)
                 )
-                .types(types)
+                .columns(types)
                 .build();
 
         return projectConvert.to(
@@ -118,7 +118,7 @@ public class ProjectService {
         project.endedAt = request.endedAt;
         project.description = request.description;
         project.permissions = permissionService.addListIfNotExist(request.permissions);
-        project.types = typeService.addListIfNotExist(request.types);
+        project.columns = typeService.addListIfNotExist(request.columns);
 
         projectRepository.save(project);
     };

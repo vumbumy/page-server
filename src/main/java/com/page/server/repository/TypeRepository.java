@@ -13,13 +13,13 @@ public interface TypeRepository extends JpaRepository<DataColumn, Long> {
     @Query(
             nativeQuery = true,
             value = "SELECT\n" +
-                    "    tp.column_no\n" +
+                    "    dc.column_no\n" +
                     "FROM\n" +
-                    "    _type AS tp\n" +
-                    "    LEFT JOIN _project_types as pt ON tp.column_no = pt.column_no\n" +
+                    "    _data_column AS dc\n" +
+                    "    LEFT JOIN _project_columns as pc ON dc.column_no = pc.column_no\n" +
                     "WHERE\n" +
-                    "    pt.project_no = ?1\n" +
-                    "    AND tp.deleted IS NOT TRUE"
+                    "    pc.project_no = ?1\n" +
+                    "    AND dc.deleted IS NOT TRUE"
     )
     List<Long> findAllByProjectNoAndDeletedFalse(Long projectNo);
 

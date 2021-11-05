@@ -1,8 +1,8 @@
 package com.page.server.service;
 
-import com.page.server.dao.ValueDao;
+import com.page.server.dao.CellDao;
 import com.page.server.entity.Ticket;
-import com.page.server.entity.data.DataValue;
+import com.page.server.entity.data.DataCell;
 import com.page.server.repository.TypeRepository;
 import com.page.server.repository.ValueRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ValueService {
     private final TypeRepository typeRepository;
     private final ValueRepository valueRepository;
 
-    public List<ValueDao> getTicketValues(Ticket ticket){
+    public List<CellDao> getTicketValues(Ticket ticket){
         return valueRepository.findAllDaoByContentNo(
                 ticket.contentNo,
                 typeRepository.findAllByProjectNoAndDeletedFalse(ticket.projectNo)
@@ -27,13 +27,13 @@ public class ValueService {
     }
 
     public void add(Long contentNo, Map<Long, String> values){
-        List<DataValue> valueList = new ArrayList<>();
+        List<DataCell> valueList = new ArrayList<>();
 
-        values.forEach((columnNo, value) -> {
-            valueList.add(DataValue.builder()
+        values.forEach((columnNo, cellValue) -> {
+            valueList.add(DataCell.builder()
                     .contentNo(contentNo)
                     .columnNo(columnNo)
-                    .value(value)
+                    .cellValue(cellValue)
                     .build()
             );
         });
@@ -42,25 +42,25 @@ public class ValueService {
     }
 
     public void put(Long contentNo, Map<Long, String> values){
-        Map<Long, DataValue> valueMap = valueRepository.findAllByContentNo(contentNo).stream()
+        Map<Long, DataCell> valueMap = valueRepository.findAllByContentNo(contentNo).stream()
                 .collect(Collectors.toMap(value -> value.columnNo, value -> value));
 
         values.forEach(
-                (columnNo, value) -> {
-                    DataValue dataValue;
+                (columnNo, cellValue) -> {
+                    DataCell dataCell;
                     if (valueMap.containsKey(columnNo)) {
-                        dataValue = valueMap.get(columnNo);
+                        dataCell = valueMap.get(columnNo);
 
-                        dataValue.columnNo = columnNo;
-                        dataValue.value = value;
+                        dataCell.columnNo = columnNo;
+                        dataCell.cellValue = cellValue;
                     } else {
-                        dataValue = DataValue.builder()
+                        dataCell = DataCell.builder()
                                 .contentNo(contentNo)
                                 .columnNo(columnNo)
-                                .value(value)
+                                .cellValue(cellValue)
                                 .build();
                     }
-                    valueMap.put(columnNo, dataValue);
+                    valueMap.put(columnNo, dataCell);
                 }
         );
 
