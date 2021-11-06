@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,10 +41,15 @@ public class ConstantController {
         );
     }
 
-    @GetMapping("/types/events/types")
-    public ResponseEntity<Event.Type[]> getEventTypes() {
+    @GetMapping("/events/types")
+    public ResponseEntity<Map<String, String>> getEventTypes() {
+
         return ResponseEntity.ok(
-                Event.Type.values()
+                Arrays.stream(Event.Type.values())
+                        .collect(Collectors.toMap(
+                                Event.Type::getName,
+                                Event.Type::getForm)
+                        )
         );
     }
 }

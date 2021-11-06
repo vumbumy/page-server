@@ -13,13 +13,15 @@ import javax.persistence.Table;
 @Table(name = "_EVENT")
 public class Event extends BaseContent {
 
+    @Getter
     @AllArgsConstructor
     public enum Type {
         NOTIFICATION("NOTIFICATION", "{}"),
-        UPDATE("UPDATE", "{}");
+        UPDATE("UPDATE", "{}"),
+        KPI("KPI", "{}");
 
-        public final String name;
-        public final String form;
+        private final String name;
+        private final String form;
     }
 
     public Type eventType;
