@@ -1,6 +1,5 @@
 package com.page.server.controller;
 
-import com.page.server.constant.Action;
 import com.page.server.entity.Event;
 import com.page.server.entity.Ticket;
 import com.page.server.entity.data.DataColumn;
@@ -40,10 +39,10 @@ public class ConstantController {
         );
     }
 
-    @GetMapping("/types/events/actions")
-    public ResponseEntity<Action[]> getEventActions() {
+    @GetMapping("/types/events/types")
+    public ResponseEntity<Event.Type[]> getEventTypes() {
         return ResponseEntity.ok(
-                Action.values()
+                Event.Type.values()
         );
     }
 }

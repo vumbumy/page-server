@@ -10,19 +10,26 @@ import java.time.LocalDateTime;
 public class EventDto {
     public String eventName;
 
-    @Builder(access = AccessLevel.PRIVATE)
     public static class Response extends EventDto {
-        public String action;
+        public String eventType;
         public String paramJson;
         public LocalDateTime createdAt;
+
+        @Builder(access = AccessLevel.PRIVATE)
+        public Response(String eventName, String eventType, String paramJson, LocalDateTime createdAt) {
+            super(eventName);
+            this.eventType = eventType;
+            this.paramJson = paramJson;
+            this.createdAt = createdAt;
+        }
     }
 
     public static class Result extends Response {
         public String result;
 
         @Builder
-        public Result(String action, String paramJson, LocalDateTime createdAt, String result) {
-            super(action, paramJson, createdAt);
+        public Result(String eventName, String eventType, String paramJson, LocalDateTime createdAt, String result) {
+            super(eventName, eventType, paramJson, createdAt);
             this.result = result;
         }
     }

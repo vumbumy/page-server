@@ -30,7 +30,7 @@ public class EventController {
     @GetMapping("/schedules")
     public ResponseEntity<List<Event>> getScheduleList(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(
-                eventService.getEventListByUser(user, Event.Type.SCHEDULE)
+                eventService.getEventListByUser(user, Boolean.TRUE)
         );
     }
 

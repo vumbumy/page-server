@@ -1,8 +1,13 @@
 package com.page.server.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.page.server.dao.EventDao;
 import com.page.server.dto.EventDto;
 import com.page.server.entity.Event;
 import com.page.server.entity.User;
+import com.page.server.model.form.NotificationParam;
+import com.page.server.model.form.UpdateParam;
 import com.page.server.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +25,35 @@ public class EventService {
 
     private final PermissionService permissionService;
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @Scheduled(cron="${cron.rule}")
     public void eventScheduler() {
-        List<Event> eventList = eventRepository.findAllByEventTypeAndEnabledIsTrue(Event.Type.SCHEDULE);
+        List<EventDao> eventList = eventRepository.findAllByScheduledIsTrue();
+        eventList.forEach(eventDao -> {
+            try {
+                switch (eventDao.getEventType()) {
+                    case NOTIFICATION:
+                        NotificationParam ntParam = objectMapper.readValue(
+                                eventDao.getParamJson(),
+                                NotificationParam.class
+                        );
 
-        log.info("Scheduled {}", eventList.size());
+                        log.info("{}", ntParam);
+                        break;
+                    case UPDATE:
+                        UpdateParam udtParam = objectMapper.readValue(
+                                eventDao.getParamJson(),
+                                UpdateParam.class
+                        );
+
+                        log.info("{}", udtParam);
+                        break;
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public Event createEvent(User user, Event event) {
@@ -34,9 +63,9 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public List<Event> getEventListByUser(User user, Event.Type eventType) {
+    public List<Event> getEventListByUser(User user, Boolean isScheduled) {
         if (user.isAdmin()) {
-            return eventRepository.findAllByEventType(eventType);
+            return eventRepository.findAllByScheduled(isScheduled);
         }
 
         // TODO: Get event list with checking permissions
@@ -51,14 +80,14 @@ public class EventService {
     }
 
     public List<EventDto.Result> getKpiResultList(User user) {
-        List<Event> eventList = getEventListByUser(user, Event.Type.KPI);
+        List<Event> eventList = getEventListByUser(user, Boolean.FALSE);
 
         List<EventDto.Result> resultList = new ArrayList<>();
 
         eventList.forEach(event -> {
             resultList.add(
                     EventDto.Result.builder()
-                            .action(event.action.getName())
+                            .eventType(event.eventType.getName())
                             .paramJson(event.paramJson)
                             .createdAt(event.createdAt)
                             .result("Done")
