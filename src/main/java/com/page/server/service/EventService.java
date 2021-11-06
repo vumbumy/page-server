@@ -6,6 +6,7 @@ import com.page.server.dao.EventDao;
 import com.page.server.dto.EventDto;
 import com.page.server.entity.Event;
 import com.page.server.entity.User;
+import com.page.server.model.form.KeyPerformanceParam;
 import com.page.server.model.form.NotificationParam;
 import com.page.server.model.form.UpdateParam;
 import com.page.server.repository.EventRepository;
@@ -85,14 +86,25 @@ public class EventService {
         List<EventDto.Result> resultList = new ArrayList<>();
 
         eventList.forEach(event -> {
-            resultList.add(
-                    EventDto.Result.builder()
-                            .eventType(event.eventType.getName())
-                            .paramJson(event.paramJson)
-                            .createdAt(event.createdAt)
-                            .result("Done")
-                            .build()
-            );
+            try {
+                KeyPerformanceParam kpParam = objectMapper.readValue(
+                        event.paramJson,
+                        KeyPerformanceParam.class
+                );
+
+                log.info("{}", kpParam);
+
+                resultList.add(
+                        EventDto.Result.builder()
+                                .eventType(event.eventType)
+                                .paramJson(event.paramJson)
+                                .createdAt(event.createdAt)
+                                .result("Done")
+                                .build()
+                );
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         });
 
         return resultList;
