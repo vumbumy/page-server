@@ -1,4 +1,4 @@
-# [Page (Server)](http://api.vumy.gq)
+# [Page (Server)](https://vumy.kr)
 
 ## Getting Started
 
